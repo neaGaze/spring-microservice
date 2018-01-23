@@ -1,0 +1,1 @@
+As a Customer of ABC Bank, I want to View my account balance for the benefit of determining how much money I can transfer to the Account of another party at another bank.
