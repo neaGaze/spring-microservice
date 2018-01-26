@@ -39,7 +39,8 @@ public class TransferController {
 	public ResponseEntity getTransferDetails(@PathVariable("bankId") String bankId,
 			@RequestBody Transaction transaction) {
 
-		//List<Bank> lists = transferService.findAll();
+		// List<Bank> lists = transferService.findAll();
+		// transferService.dumpFlatFile(transaction);
 		System.out.println("Transaction amount: "+transaction.getAmount());
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
@@ -50,8 +51,9 @@ public class TransferController {
 	 * and perform the debit/credit on the account, and finally send
 	 * the confirmation status back to the ACH through Mule Flow
 	 ***/
-	@RequestMapping(value="/send", method=RequestMethod.GET)
-	public ResponseEntity debitOrCreditAmount() {
+	@RequestMapping(value="{bankName}/executeTransfer", method=RequestMethod.POST)
+	public ResponseEntity debitOrCreditAmount(@PathVariable("bankName") String bankName,
+			Integer testResponse) {
 		
         return new ResponseEntity(new Integer(4), HttpStatus.ACCEPTED);
     }
