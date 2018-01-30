@@ -1,4 +1,4 @@
-package stargate.application.controllerTest;
+package com.stargate.controllerTest;
 
 import static org.junit.Assert.*;
 
@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import stargate.application.controller.GetBalanceController;
-import stargate.application.repository.GetBalanceRepository;
+import com.stargate.controller.GetBalanceController;
+import com.stargate.repository.GetBalanceRepository;
 
 public class GetBalanceControllerUnitTest {
 	

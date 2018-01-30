@@ -1,4 +1,5 @@
-package stargate.application.entity;
+package com.stargate.entity;
+
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 @Table(name= "bank", schema = "ach_stargate")
 @NamedNativeQuery(name = "balance", query = "select b.available_balance, b.bank_id, b.customer_id,b.bank_name, b.account_no from bank b where b.account_no=:account_no", resultClass=Bank.class) 
 
-public class Bank implements Serializable {
+public class Bank {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

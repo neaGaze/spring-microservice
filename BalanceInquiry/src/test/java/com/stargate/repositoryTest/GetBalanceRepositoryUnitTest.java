@@ -1,4 +1,4 @@
-package stargate.application.repositoryTest;
+package com.stargate.repositoryTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,13 +14,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import stargate.application.entity.Bank;
-import stargate.application.repository.*;
+import com.stargate.entity.Bank;
+import com.stargate.repository.*;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @TestPropertySource(locations="classpath:application.properties")
 @AutoConfigureTestDatabase(replace= Replace.NONE)
-public class GetBalanceRepositoryTest {
+public class GetBalanceRepositoryUnitTest {
        @Autowired
     private TestEntityManager entityManager;
 

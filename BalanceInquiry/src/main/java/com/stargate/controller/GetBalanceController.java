@@ -1,4 +1,4 @@
-package stargate.application.controller;
+package com.stargate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import stargate.application.entity.Bank;
-import stargate.application.repository.GetBalanceRepository;
+import com.stargate.entity.Bank;
+import com.stargate.repository.GetBalanceRepository;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Controller
-@RequestMapping(path = "/demo")
+@RequestMapping(path = "/getbalance")
 public class GetBalanceController {
 
 	@Autowired
@@ -39,4 +39,3 @@ public class GetBalanceController {
 	}*/
 	
 }
-
