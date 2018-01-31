@@ -1,0 +1,9 @@
+---
+applications:
+- name: stargate-org
+  path: target/TransferFund-0.0.1-SNAPSHOT.jar
+  health-check-type: port
+  timeout: 60
+  memory: 128M
+  disk_quota: 128M
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git

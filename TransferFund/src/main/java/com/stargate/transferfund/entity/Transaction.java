@@ -4,16 +4,18 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //@Entity
 public class Transaction implements Serializable {
 
 	//@Id
 	//private Integer id;
-	
-	private Account senderDetails;
 
-	private Account receiverDetails;
-	
+	protected Account senderDetails;
+
+	protected Account receiverDetails;
+
 	private Double amount;
 /*	
 	public Integer getId() {

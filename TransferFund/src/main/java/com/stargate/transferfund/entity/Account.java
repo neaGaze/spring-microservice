@@ -4,14 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Account implements Serializable {
 
 	private String name;
+
+	private String accountNumber;
 	
-	private Long accountNumber;
-	
-	private Long rountingNumber;
-	
+	private String routingNumber;
+
 	private AccountType accountType;
 	
 	private String bankName;
@@ -24,20 +26,20 @@ public class Account implements Serializable {
 		this.name = name;
 	}
 
-	public Long getAccountNumber() {
+	public String getAccountNumber() {
 		return accountNumber;
 	}
 
-	public void setAccountNumber(Long accountNumber) {
+	public void setAccountNumber(String accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 
-	public Long getRountingNumber() {
-		return rountingNumber;
+	public String getRountingNumber() {
+		return routingNumber;
 	}
 
-	public void setRountingNumber(Long rountingNumber) {
-		this.rountingNumber = rountingNumber;
+	public void setRountingNumber(String rountingNumber) {
+		this.routingNumber = rountingNumber;
 	}
 
 	public AccountType getAccountType() {

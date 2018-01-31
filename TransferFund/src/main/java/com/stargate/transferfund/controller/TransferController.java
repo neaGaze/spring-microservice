@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.stargate.transferfund.entity.Bank;
+import com.stargate.transferfund.entity.ResponseStatus;
 import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.service.TransferService;
 
@@ -30,17 +34,17 @@ public class TransferController {
 		// like an initializer
 	}
 	
+	
 	/**
 	 * This endpoint will receive payload from the Mule regarding
 	 * the details of transactions including the sender info, receiver
 	 * info and amount to transfer 
 	 ***/
-	@RequestMapping(value="/{bankId}/intiateTransfer", method=RequestMethod.POST)
+	@RequestMapping(value="/{bankId}/initiateTransfer", method=RequestMethod.POST)
 	public ResponseEntity getTransferDetails(@PathVariable("bankId") String bankId,
 			@RequestBody Transaction transaction) {
-
 		// List<Bank> lists = transferService.findAll();
-		// transferService.dumpFlatFile(transaction);
+		transferService.dumpFlatFile(transaction);
 		System.out.println("Transaction amount: "+transaction.getAmount());
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
@@ -53,8 +57,12 @@ public class TransferController {
 	 ***/
 	@RequestMapping(value="{bankName}/executeTransfer", method=RequestMethod.POST)
 	public ResponseEntity debitOrCreditAmount(@PathVariable("bankName") String bankName,
-			Integer testResponse) {
-		
-        return new ResponseEntity(new Integer(4), HttpStatus.ACCEPTED);
-    }
+			ResponseStatus testResponse) {
+		/*List<Bank> banks = transferService.findAll();
+		for(int i = 0; i < banks.size(); i++)
+			System.out.println(banks.get(i).getBankName());
+        */
+		String abc;
+		return new ResponseEntity(new Integer(7), HttpStatus.ACCEPTED);	
+	}
 }

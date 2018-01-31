@@ -11,5 +11,5 @@ import com.stargate.transferfund.exception.InvalidRequestException;
 public interface TransferService {
 	List<Bank> findAll();
 	
-	boolean dumpFlatFile(Transaction transaction) throws InvalidRequestException;
+	boolean dumpFlatFile(Transaction transaction) /*throws InvalidRequestException*/;
 }

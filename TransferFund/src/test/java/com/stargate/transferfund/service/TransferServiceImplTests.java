@@ -27,21 +27,6 @@ import com.stargate.transferfund.repository.BankRepository;
 
 @RunWith(SpringRunner.class)
 public class TransferServiceImplTests {
-
-//	@TestConfiguration
-//	static class TransferServiceImplTestContextConfiguration {
-//		
-//		@Bean
-//		public TransferService transferService () {
-//			return new TransferServiceImpl();
-//		}
-//		
-//		@Bean 
-//		public RestTemplate restTemplate() {
-//			return new RestTemplateBuilder().build();
-//		}
-//		
-//	}
 	
 	@Mock
 	private BankRepository bankRepository;
@@ -72,19 +57,17 @@ public class TransferServiceImplTests {
 	
 	@Test
 	public void whenValidRequest_thenSuccess() {
-		boolean expectedResult = false;
+		boolean expectedResult = true;
 		
 		Transaction transaction = new Transaction();
 		transaction.setAmount(59.99);
 		
 		boolean actualResult = false;
 		try {
-			transferServiceImpl.dumpFlatFile(transaction);
-		} catch (InvalidRequestException e) {
-			System.out.println(e.getMessage());
-			actualResult = false;
+			actualResult = transferServiceImpl.dumpFlatFile(transaction);
 		} finally {
 			assertThat(actualResult).isEqualTo(expectedResult);
 		}
 	}
+	
 }
