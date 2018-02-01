@@ -1,1 +1,1 @@
-As a Customer of ABC Bank, I want to View my account balance for the benefit of determining how much money I can transfer to the Account of another party at another bank.
+As an ACH Department, this microservice will get the input from the Mule Flow as a request body of type Transaction and send back the ResponseStatus object. 
