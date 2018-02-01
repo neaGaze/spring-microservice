@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Account implements Serializable {
 
+	private Integer bankId;
+	
 	private String name;
 
 	private String accountNumber;
@@ -17,6 +19,22 @@ public class Account implements Serializable {
 	private AccountType accountType;
 	
 	private String bankName;
+	
+	public Integer getBankId() {
+		return bankId;
+	}
+
+	public void setBankId(Integer bankId) {
+		this.bankId = bankId;
+	}
+
+	public String getRoutingNumber() {
+		return routingNumber;
+	}
+
+	public void setRoutingNumber(String routingNumber) {
+		this.routingNumber = routingNumber;
+	}
 	
 	public String getName() {
 		return name;

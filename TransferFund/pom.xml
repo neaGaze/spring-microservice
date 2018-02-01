@@ -6,7 +6,7 @@
 	<groupId>com.stargate.transferfund</groupId>
 	<artifactId>TransferFund</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>TransferFund</name>
 	<description>Demo project for Spring Boot</description>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-artemis</artifactId>
-			<version>1.5.6.RELEASE</version> 
+			<version>1.5.6.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
@@ -72,7 +72,13 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
-	
+
+		<!-- http://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>

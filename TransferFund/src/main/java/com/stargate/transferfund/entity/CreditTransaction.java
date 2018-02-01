@@ -1,8 +1,8 @@
 package com.stargate.transferfund.entity;
 
-public class CreditTransaction extends Transaction {
+public class CreditTransaction extends TransferRequest {
 	
 	public CreditTransaction() {
-		this.senderDetails = null;
+		this.transactionType = TransactionType.CREDIT;
 	}
 }

@@ -17,6 +17,8 @@ public class Transaction implements Serializable {
 	protected Account receiverDetails;
 
 	private Double amount;
+	
+	private TransactionType transactionType;
 /*	
 	public Integer getId() {
 		return id;
@@ -48,5 +50,13 @@ public class Transaction implements Serializable {
 
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+	
+	public TransactionType getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
 	}
 }

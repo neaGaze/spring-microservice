@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.stargate.transferfund.entity.Bank;
 import com.stargate.transferfund.entity.ResponseStatus;
 import com.stargate.transferfund.entity.Transaction;
+import com.stargate.transferfund.entity.TransferRequest;
+import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.service.TransferService;
 
 @Controller
@@ -43,8 +45,8 @@ public class TransferController {
 	@RequestMapping(value="/{bankId}/initiateTransfer", method=RequestMethod.POST)
 	public ResponseEntity getTransferDetails(@PathVariable("bankId") String bankId,
 			@RequestBody Transaction transaction) {
-		// List<Bank> lists = transferService.findAll();
-		transferService.dumpFlatFile(transaction);
+		
+		transferService.transfertoJMS(transaction);
 		System.out.println("Transaction amount: "+transaction.getAmount());
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
@@ -57,12 +59,14 @@ public class TransferController {
 	 ***/
 	@RequestMapping(value="{bankName}/executeTransfer", method=RequestMethod.POST)
 	public ResponseEntity debitOrCreditAmount(@PathVariable("bankName") String bankName,
-			ResponseStatus testResponse) {
-		/*List<Bank> banks = transferService.findAll();
-		for(int i = 0; i < banks.size(); i++)
-			System.out.println(banks.get(i).getBankName());
-        */
-		String abc;
-		return new ResponseEntity(new Integer(7), HttpStatus.ACCEPTED);	
+			@RequestBody TransferRequest transferRequest) {
+		
+		String returnStr = "SUCCESSFULLY DEBITED AMOUNT";
+		try {
+			transferService.updateUniTransfer(transferRequest);
+		} catch (FailedDBUpdateException e) {
+			returnStr = e.getMessage();
+		}
+		return new ResponseEntity(returnStr, HttpStatus.ACCEPTED);	
 	}
 }

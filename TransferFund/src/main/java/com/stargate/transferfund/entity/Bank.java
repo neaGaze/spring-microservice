@@ -5,27 +5,31 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "bank", schema = "ach_stargate")
 public class Bank {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="bank_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "bank_id")
 	private Integer bankId;
-	
+
 	private Integer customerId;
-	
+
 	private String bankName;
-	
+
+	@Column(name = "account_no")
 	private String accountNo;
-	
+
 	private String routingNo;
-	
+
+	@Column(name = "available_balance")
 	private Double availableBalance;
-	
+
 	private String accountType;
-	
+
 	public Integer getBankId() {
 		return bankId;
 	}
@@ -81,6 +85,5 @@ public class Bank {
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
 	}
-
 
 }

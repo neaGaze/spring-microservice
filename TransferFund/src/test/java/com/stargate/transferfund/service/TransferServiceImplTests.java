@@ -64,7 +64,7 @@ public class TransferServiceImplTests {
 		
 		boolean actualResult = false;
 		try {
-			actualResult = transferServiceImpl.dumpFlatFile(transaction);
+			actualResult = transferServiceImpl.transfertoJMS(transaction);
 		} finally {
 			assertThat(actualResult).isEqualTo(expectedResult);
 		}

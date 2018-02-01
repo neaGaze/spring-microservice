@@ -45,33 +45,5 @@ public class JMSConfiguration {
 		converter.setTargetType(MessageType.TEXT);
 		converter.setTypeIdPropertyName("_type");
 		return converter;
-	}
-	/*
-	 @Bean
-	    public ConnectionFactory connectionFactory(){
-	        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-	        connectionFactory.setBrokerURL("tcp://localhost:61616");
-	        connectionFactory.setUserName("admin");
-	        connectionFactory.setPassword("admin");
-	        return connectionFactory;
-    }
-	 */
-	/* @Bean
-	    public BrokerService brokerService() throws Exception {
-	        BrokerService brokerService = new BrokerService();
-	        brokerService.setPersistent(false);
-	        brokerService.setUseJmx(false);
-	        brokerService.addConnector("tcp://localhost:61616");
-	        brokerService.setBrokerName("broker");
-	        brokerService.setUseShutdownHook(false);
-	        brokerService.setSchedulerSupport(true);
-	        return brokerService;
-	    }
-	 */
-	/* @Bean
-	 public ActiveMQQueue defaultDestination(){
-	     return new ActiveMQQueue("broker");
-	 }
-	 */
-	
+	}	
 }
