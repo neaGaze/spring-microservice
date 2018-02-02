@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.stargate.entity.Bank;
+import com.stargate.exception.AccountDoesNotExistException;
 import com.stargate.repository.GetBalanceRepository;
 
 import java.util.List;
@@ -28,8 +29,11 @@ public class GetBalanceController {
 	
 	@GetMapping(path="/find")
 	public @ResponseBody Bank getBank (@RequestParam String account_no) {
-		return getBalanceRepository.findBalance(account_no);
-	
+		Bank account=getBalanceRepository.findBalance(account_no);
+		if(account==null) {
+			throw new AccountDoesNotExistException("account number: " +account_no+" does not exist ");
+		}
+		return account;
 	}
 
 	/*@GetMapping(path="/find/{account_no}")

@@ -19,6 +19,7 @@ public interface GetBalanceRepository extends CrudRepository<Bank, Integer> {
 	@Query(name="balance")
 	Bank findBalance(@Param("account_no") String account_no);
 	
+	List<Bank> findAll();
 	
 	//List<Bank> findBalance();
 	
