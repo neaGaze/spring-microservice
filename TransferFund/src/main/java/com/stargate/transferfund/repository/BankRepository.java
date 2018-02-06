@@ -11,17 +11,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.stargate.transferfund.entity.Bank;
-import com.stargate.transferfund.entity.TransferRequest;
 
 @Repository
 public interface BankRepository extends CrudRepository<Bank, Integer> {
 	
 	List<Bank> findAll();
+	
+	Bank findOne(Integer bankId);
 
 	@Query(value="UPDATE Bank b SET b.availableBalance = b.availableBalance - ?2 where b.bankId = ?1")
 	@Modifying 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	int debitBankBalance( Integer bankId, Double amount);
+	int debitBankBalance(Integer bankId, Double amount);
 	
 
 	@Query(value="UPDATE Bank b SET b.availableBalance = b.availableBalance + ?2 where b.bankId = ?1")

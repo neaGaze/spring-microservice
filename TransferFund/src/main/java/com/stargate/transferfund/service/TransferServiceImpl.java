@@ -1,5 +1,6 @@
 package com.stargate.transferfund.service;
 
+import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +12,10 @@ import com.stargate.transferfund.entity.TransactionType;
 import com.stargate.transferfund.entity.TransferRequest;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.repository.BankRepository;
-import com.stargate.transferfund.util.GlobalUtils;
+import com.stargate.transferfund.util.JMSMessageDelayCalculatorUtil;
 
 @Service
 public class TransferServiceImpl implements TransferService{
-	
-	
 
 	@Autowired
 	private BankRepository bankRepository;
@@ -66,7 +65,7 @@ public class TransferServiceImpl implements TransferService{
 
 		System.out.println("Sending a transaction.");
 
-		long timeToDeliver = GlobalUtils.getDelayTime(delayTime);
+		long timeToDeliver = JMSMessageDelayCalculatorUtil.getDelayTime(delayTime, Calendar.getInstance().getTime());
 		System.out.println("expected Delivery TIme: " + (timeToDeliver / 1000) + " secs");
 		jmsTemplate.setDeliveryDelay(timeToDeliver);
 		jmsTemplate.convertAndSend(destinationQueue, transaction);

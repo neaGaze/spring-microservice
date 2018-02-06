@@ -51,7 +51,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+	<!-- 	<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+			<version>1.4.194</version>
+		</dependency> -->
 		<!-- marked the embedded servlet container as provided -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

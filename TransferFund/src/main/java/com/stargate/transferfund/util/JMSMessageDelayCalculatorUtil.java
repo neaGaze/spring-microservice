@@ -8,20 +8,19 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class GlobalUtils {
+public class JMSMessageDelayCalculatorUtil {
 
 	/**********************************************************************************
 	 * Logic for calculating the delivery time of the JMS message 
 	 ************************************************************************************/
-	public static long getDelayTime(Integer delayTime) {
+	public static long getDelayTime(Integer delayTime, Date currentTime) {
 		FastDateFormat formatter = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT;
 
-		Calendar cal = Calendar.getInstance();
-		Date currentTime = cal.getTime();
-		long currentTimeInMillis = cal.getTimeInMillis();
+		//Date currentTime = cal.getTime();
+		//long currentTimeInMillis = cal.getTimeInMillis();
 		
 		 // Get nearest hour
-        Date nearestHour = DateUtils.round(currentTime, Calendar.HOUR);
+		Date nearestHour = DateUtils.ceiling(currentTime, Calendar.HOUR);
         DateUtils.setMinutes(currentTime, 0);
         DateUtils.setSeconds(currentTime, 0);
 

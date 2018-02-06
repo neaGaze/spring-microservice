@@ -1,7 +1,5 @@
 package com.stargate.transferfund.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -13,10 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.stargate.transferfund.entity.Bank;
 import com.stargate.transferfund.entity.ResponseStatus;
 import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransferRequest;
@@ -43,12 +37,12 @@ public class TransferController {
 	 * info and amount to transfer 
 	 ***/
 	@RequestMapping(value="/{bankId}/initiateTransfer", method=RequestMethod.POST)
-	public ResponseEntity getTransferDetails(@PathVariable("bankId") String bankId,
+	public ResponseEntity<ResponseStatus> getTransferDetails(@PathVariable("bankId") String bankId,
 			@RequestBody Transaction transaction) {
-		
 		transferService.transfertoJMS(transaction);
 		System.out.println("Transaction amount: "+transaction.getAmount());
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+		ResponseStatus status = new ResponseStatus("SUCCESS", "");
+	    return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);
     }
 	
 	
@@ -58,15 +52,18 @@ public class TransferController {
 	 * the confirmation status back to the ACH through Mule Flow
 	 ***/
 	@RequestMapping(value="{bankName}/executeTransfer", method=RequestMethod.POST)
-	public ResponseEntity debitOrCreditAmount(@PathVariable("bankName") String bankName,
+	public ResponseEntity<ResponseStatus> debitOrCreditAmount(@PathVariable("bankName") String bankName,
 			@RequestBody TransferRequest transferRequest) {
-		
-		String returnStr = "SUCCESSFULLY DEBITED AMOUNT";
+		ResponseStatus status = new ResponseStatus();
+		String returnStr = "";
 		try {
 			transferService.updateUniTransfer(transferRequest);
 		} catch (FailedDBUpdateException e) {
 			returnStr = e.getMessage();
+			status.setError(e.getMessage());
+			status.setStatus("FAILED");
 		}
-		return new ResponseEntity(returnStr, HttpStatus.ACCEPTED);	
+		status = new ResponseStatus("SUCCESS", returnStr);
+		return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);	
 	}
 }
