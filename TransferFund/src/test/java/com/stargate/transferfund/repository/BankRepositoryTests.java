@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -24,21 +25,12 @@ public class BankRepositoryTests {
 	BankRepository bankRepository;
 	
 	@Test
-	public void whenDebit_Success() {
-		/*int result = bankRepository.debitBankBalance(101, new Double(1000));
-
-	    Assert.assertNotNull(bankRepository.findOne(101));
-
-		assertThat(result).isEqualTo(1);
-		
-	    assertThat(found.getName())
-	      .isEqualTo(alex.getName());
-		 */	
+	public void whenDebit_DataModifySuccess() {
 		
 		 // given
 	    Bank bank = new Bank();
-	    bank.setBankId(101);
-	    bank.setAccountType("CHECKING");
+	    //bank.setBankId(101);
+	    bank.setAccountType("SAVINGS");
 	    bank.setAccountNo("12345");
 	    bank.setAvailableBalance(50000.0);
 	    bank.setBankName("Bank of New Mexico");

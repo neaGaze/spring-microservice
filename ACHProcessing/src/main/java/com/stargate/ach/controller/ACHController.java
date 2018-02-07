@@ -3,6 +3,7 @@ package com.stargate.ach.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import com.stargate.ach.entity.TransferRequest;
 import com.stargate.ach.service.ACHService;
 
 @RestController
-@RequestMapping(path = "/ach")
+@RequestMapping("ach")
 public class ACHController {
 	@Autowired
 	private ACHService service;
@@ -25,15 +26,18 @@ public class ACHController {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Value("${stargate.userstory2.ipaddress}")
+	String address;
+	
 	// @Autowired
 	// private ACHRepository repository;
-
+	
 	/***
 	 * This method will receive input from the Mule Flow after the scatter-gather
 	 * segregates the list of transactions. Each transaction will be sent to this
 	 * endpoint through RESTful webservice from Mule
 	 ****/
-	@PostMapping("/ach/transaction")
+	@PostMapping("/transaction")
 	public Integer/* ResponseStatus */ initiateTransfer(@RequestBody Transaction txn) {
 
 		if (txn == null)
@@ -49,7 +53,7 @@ public class ACHController {
 				HttpStatus.ACCEPTED);
 		
 		// URL to send the request to Bank A
-		String url = "http://10.200.118.16:8085/transferfunds/"+transferRequest.getAccount().getBankName()+"/executeTransfer";
+		String url = address + "/transferfunds/"+transferRequest.getAccount().getBankName()+"/executeTransfer";
 		System.out.println("Sending request to : " + url);
 		System.out.println("TransferRequest obj -> " + transferRequest.toString());
 		

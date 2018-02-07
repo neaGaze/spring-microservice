@@ -18,7 +18,7 @@ public class JMSMessageDelayCalculatorUtilTests {
 	public void whenGivenCurrentTime_thenFindDelayDifferenceSuccess() {
 		Integer delayTime = 3600000;
 		Long expectedTimeInMilli = (long) 0;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy-dd HH:mm:ss");
 		Date currentTime = null;
 		try {
 			currentTime = sdf.parse("02-2018-01 05:31:00");

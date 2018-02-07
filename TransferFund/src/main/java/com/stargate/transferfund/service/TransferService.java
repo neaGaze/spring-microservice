@@ -13,7 +13,7 @@ import com.stargate.transferfund.exception.InvalidRequestException;
 public interface TransferService {
 	List<Bank> findAll();
 	
-	boolean transfertoJMS(Transaction transaction);
+	void transfertoJMS(Transaction transaction);
 	
 	void updateUniTransfer(TransferRequest transferRequest) throws FailedDBUpdateException;
 }
