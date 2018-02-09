@@ -40,12 +40,12 @@ public class ACHControllerTest {
 
 	@Test
 	public void postTransactionTest() throws Exception {
-		BLTransaction mockTxn = null;
+		/*BLTransaction mockTxn = null;
 
 		// transactionService.addTransaction to respond back with mockTransaction
 		Mockito.when(
 				transactionService.addTransaction(Mockito.any(BLTransaction.class))).thenReturn(mockTxn);
-
+		 */
 		// Send transaction as body to /URL path
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(Matchers.anyString())

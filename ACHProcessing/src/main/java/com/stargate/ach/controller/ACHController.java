@@ -46,41 +46,26 @@ public class ACHController {
 	@PostMapping("/persist")
 	public ResponseEntity<ResponseStatus> persistTransfer(@RequestBody BLTransaction txn) {
 
-		if (txn == null)
-			return null;
-
-		// save it in the transaction table
-		service.addTransaction(txn);
-/*
-		// create a new TransferRequest POJO from the Transaction entity for the sender
-		TransferRequest transferRequest = TransferRequest.buildDebitTransferRequest(txn);
-
-		ResponseEntity<TransferRequest> entity = new ResponseEntity<TransferRequest>(transferRequest,
-				HttpStatus.ACCEPTED);
+		ResponseStatus respStatus = new ResponseStatus("SUCCESS : Data Persisted", "");
 		
-		// URL to send the request to Bank A
-		String url = address + "/transferfunds/"+transferRequest.getAccountNo()+"/executeTransfer";
-		System.out.println("Sending request to : " + url);
-		System.out.println("TransferRequest obj -> " + transferRequest.toString());
-		
-		ResponseEntity<ResponseStatus> newResponseEntity = restTemplate.exchange(
-				url, HttpMethod.POST, entity,
-				ResponseStatus.class);
-
-		ResponseStatus responseStatus = (ResponseStatus)newResponseEntity.getBody();
-		System.out.println("Response after the bank A sends us the response "+responseStatus.getStatus());
-		*/
-		String status = "Data Persisted";
-		int dbUpdateSts = service.updateStatus(txn, status);
-		if(dbUpdateSts == 1) {
-			return new ResponseEntity<ResponseStatus> (new ResponseStatus("SUCCESS", status), HttpStatus.ACCEPTED);
-		} else if(dbUpdateSts > 1) {
-			status = MulitpleDBRowEffectedException.getMesg();	
-		} else {
-			status = "Data Persist Failed";
+		if (txn == null) {
+			respStatus.setStatus("FAIL");
+			respStatus.setError("Null payload received");
+			return new ResponseEntity<ResponseStatus> (respStatus, HttpStatus.ACCEPTED);
 		}
 		
-		return new ResponseEntity<ResponseStatus> (new ResponseStatus("FAILED", status), HttpStatus.ACCEPTED);
+		// save it in the transaction table
+		service.addTransaction(txn);
+
+		if(service.updateStatus(txn, respStatus.getError()) > 1) {
+			respStatus.setStatus("FAIL"); 
+			respStatus.setError(MulitpleDBRowEffectedException.getMesg());
+		} else {
+			respStatus.setStatus("FAIL"); 
+			respStatus.setError("Data Persist Failed");
+		}
+		
+		return new ResponseEntity<ResponseStatus> (respStatus, HttpStatus.ACCEPTED);
 
 		// ResponseEntity<ResponseStatus> newResponseEntity = new
 		// ResponseEntity<ResponseStatus>(HttpStatus.ACCEPTED); // JUST THE TESTING
