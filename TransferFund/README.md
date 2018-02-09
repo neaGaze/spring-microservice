@@ -20,35 +20,30 @@ api
   - POST
 		- http://<<host:port/path>>/transferfunds/1/initiateTransfer
 		  - incoming payload: 
-			  {
+			 {
 				"senderDetails": {
-					"name": "Joe",
-					"accountNumber": "123456",
+					"bankId": 101,
+					"name": "Zachherinni",
+					"accountNumber": "5784280195134310",
 					"routingNumber": "ab56789",
 					"accountType": "SAVINGS",
 					"bankName": "XYZ"
 				},
 				"receiverDetails": {
-					"name": "Gabber",
-					"accountNumber": "123456789",
+					"bankId": 102,
+					"name": "DeMichelis",
+					"accountNumber": "3593359822843810",
 					"routingNumber": "cd65432",
 					"accountType": "SAVINGS",
 					"bankName": "ABC"
 				},
-				"amount": 1000
+				"amount": 3500
 			}
 	- POST					
 		 - http://<<host:port/path>>/transferfunds/XYZ/executeTransfer
 			- incoming payload;
 				{
-					"account": {
-						"bankId": 101,
-						"name": "Joe",
-						"accountNumber": 123456,
-						"routingNumber": "ab56789",
-						"accountType": "SAVINGS",
-						"bankName": "XYZ"
-					},
-					"amount": 1000,
-					"transactionType": "DEBIT"
+					"accountNo": "7064689794255120",
+					"amount": 500,
+					"transactionType": "CREDIT"
 				}
