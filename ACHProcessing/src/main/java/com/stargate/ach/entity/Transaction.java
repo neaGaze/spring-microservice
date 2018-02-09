@@ -15,10 +15,13 @@ public class Transaction implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer transaction_id;
+	
 	@Transient
 	private Account senderDetails;
+	
 	@Transient
 	private Account receiverDetails;
+	
 	@Transient
 	private Double amount;
 	

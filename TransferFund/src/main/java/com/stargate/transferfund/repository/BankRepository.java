@@ -19,14 +19,14 @@ public interface BankRepository extends CrudRepository<Bank, Integer> {
 	
 	Bank findOne(Integer bankId);
 
-	@Query(value="UPDATE Bank b SET b.availableBalance = b.availableBalance - ?2 where b.bankId = ?1")
+	@Query(value="UPDATE Bank b SET b.availableBalance = b.availableBalance - ?2 where b.accountNo = ?1")
 	@Modifying 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	int debitBankBalance(Integer bankId, Double amount);
+	int debitBankBalance(String accountNo, Double amount);
 	
 
-	@Query(value="UPDATE Bank b SET b.availableBalance = b.availableBalance + ?2 where b.bankId = ?1")
+	@Query(value="UPDATE Bank b SET b.availableBalance = b.availableBalance + ?2 where b.accountNo = ?1")
 	@Modifying 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-	int creditBankBalance(Integer bankId,  Double amount);
+	int creditBankBalance(String accountNo,  Double amount);
 }

@@ -42,7 +42,7 @@ public class BankRepositoryTests {
 	 
 	    // when
 	    //Employee found = employeeRepository.findByName(alex.getName());
-	    int result = bankRepository.debitBankBalance(101, new Double(1000));
+	    int result = bankRepository.debitBankBalance("12345", new Double(1000));
 	    
 	    // then
 		assertThat(result).isEqualTo(1);

@@ -56,10 +56,6 @@ public class Account implements Serializable {
 		return routingNumber;
 	}
 
-	public void setRountingNumber(String rountingNumber) {
-		this.routingNumber = rountingNumber;
-	}
-
 	public AccountType getAccountType() {
 		return accountType;
 	}

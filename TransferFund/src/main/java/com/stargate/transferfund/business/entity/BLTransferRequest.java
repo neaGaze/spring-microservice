@@ -1,10 +1,10 @@
-package com.stargate.ach.entity;
+package com.stargate.transferfund.business.entity;
 
 import java.io.Serializable;
 
-import com.stargate.ach.business.entity.BLTransaction;
+import com.stargate.transferfund.entity.TransactionType;
 
-public class TransferRequest implements Serializable {
+public class BLTransferRequest implements Serializable {
 
 	private static final long serialVersionUID = 2723481588648225244L;
 
@@ -13,7 +13,7 @@ public class TransferRequest implements Serializable {
 	protected Double amount;
 
 	protected TransactionType transactionType;
-	
+
 	public String getAccount() {
 		return accountNo;
 	}
@@ -29,7 +29,7 @@ public class TransferRequest implements Serializable {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	
+
 	public String getAccountNo() {
 		return accountNo;
 	}
@@ -45,26 +45,16 @@ public class TransferRequest implements Serializable {
 	public void setTransactionType(TransactionType transactionType) {
 		this.transactionType = transactionType;
 	}
-	
-	public static TransferRequest buildDebitTransferRequest(BLTransaction txn) {
-		TransferRequest transferRequest = new TransferRequest();
-		// TODO assumption: sender is always the debitor
-		transferRequest.setAccountNo(txn.getSenderDetails()); 
-		transferRequest.setAmount(txn.getAmount());
-		transferRequest.setTransactionType(TransactionType.DEBIT);
-		return transferRequest;
-	}
-	
 
-	public static TransferRequest buildCreditTransferRequest(BLTransaction txn) {
-		TransferRequest transferRequest = new TransferRequest();
-		// TODO assumption: sender is always the creditor
-		transferRequest.setAccountNo(txn.getReceiverDetails()); 
-		transferRequest.setAmount(txn.getAmount());
-		transferRequest.setTransactionType(TransactionType.CREDIT);
-		return transferRequest;
+	public static BLTransferRequest buildDebitTransferRequest(BLTransaction txn) {
+		BLTransferRequest blTransferRequest = new BLTransferRequest();
+		// TODO assumption: sender is always the debitor
+		blTransferRequest.setAccountNo(txn.getSenderDetails());
+		blTransferRequest.setAmount(txn.getAmount());
+		blTransferRequest.setTransactionType(TransactionType.DEBIT);
+		return blTransferRequest;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "TransferRequest [accountNo =" + accountNo + "amount=" + amount + ", transactionType=" + transactionType

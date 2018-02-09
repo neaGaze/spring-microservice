@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.junit.runner.RunWith;
 
 import com.stargate.ach.service.ACHService;
+import com.stargate.ach.business.entity.BLTransaction;
 import com.stargate.ach.entity.*;
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -39,11 +40,11 @@ public class ACHControllerTest {
 
 	@Test
 	public void postTransactionTest() throws Exception {
-		Transaction mockTxn = null;
+		BLTransaction mockTxn = null;
 
 		// transactionService.addTransaction to respond back with mockTransaction
 		Mockito.when(
-				transactionService.addTransaction(Mockito.any(Transaction.class))).thenReturn(mockTxn);
+				transactionService.addTransaction(Mockito.any(BLTransaction.class))).thenReturn(mockTxn);
 
 		// Send transaction as body to /URL path
 		RequestBuilder requestBuilder = MockMvcRequestBuilders

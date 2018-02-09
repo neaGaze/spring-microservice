@@ -1,30 +1,19 @@
 package com.stargate.transferfund.util;
 
-import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.lang.time.FastDateFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class JMSMessageDelayCalculatorUtil {
 
 	/**********************************************************************************
-	 * Logic for calculating the delivery time of the JMS message 
+	 * Logic for calculating the delivery time of the JMS message.
+	 * Unit Test cases {@link com.stargate.transferfund.util.JMSMessageDelayCalculatorUtilTests.java}
 	 ************************************************************************************/
 	public static long getDelayTime(Integer delayTime, Date currentTime) {
-		FastDateFormat formatter = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT;
-
-		//Date currentTime = cal.getTime();
-		//long currentTimeInMillis = cal.getTimeInMillis();
-		
-		 // Get nearest hour
-		Date nearestHour = DateUtils.ceiling(currentTime, Calendar.HOUR);
-        DateUtils.setMinutes(currentTime, 0);
-        DateUtils.setSeconds(currentTime, 0);
-
-        System.out.println("nearestRoundedHour = " + formatter.format(nearestHour));
-        return nearestHour.getTime() - currentTime.getTime();
+        
+        long curTime = currentTime.getTime();
+        long newTime = (((curTime / delayTime) * delayTime) + delayTime) - curTime;
+        System.out.println("CurTime in milli: " + curTime + " and delayTime: " + delayTime);
+        return newTime;
 	}
 }

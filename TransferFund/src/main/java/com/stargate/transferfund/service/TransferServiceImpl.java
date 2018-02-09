@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+
+import com.stargate.transferfund.business.entity.BLTransaction;
+import com.stargate.transferfund.business.entity.BLTransferRequest;
 import com.stargate.transferfund.entity.Bank;
 import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransactionType;
@@ -13,6 +16,7 @@ import com.stargate.transferfund.entity.TransferRequest;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.repository.BankRepository;
 import com.stargate.transferfund.util.JMSMessageDelayCalculatorUtil;
+import com.stargate.transferfund.util.PrgmTxnToBsnTxnConverter;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -62,26 +66,27 @@ public class TransferServiceImpl implements TransferService {
 	public void transfertoJMS(Transaction transaction) {
 		System.out.println("Sending a transaction.");
 
+		BLTransaction blTransaction = PrgmTxnToBsnTxnConverter.convert(transaction);
 		long timeToDeliver = JMSMessageDelayCalculatorUtil.getDelayTime(delayTime, Calendar.getInstance().getTime());
 		System.out.println("expected Delivery TIme: " + (timeToDeliver / 1000) + " secs");
 		jmsTemplate.setDeliveryDelay(timeToDeliver);
-		jmsTemplate.convertAndSend(destinationQueue, transaction);
+		jmsTemplate.convertAndSend(destinationQueue, blTransaction);
 	}
 
 	/******************************************************
 	 * To update the one directional transfer
 	 *******************************************************/
 	@Override
-	public void updateUniTransfer(TransferRequest transferRequest) throws FailedDBUpdateException {
+	public void updateUniTransfer(BLTransferRequest transferRequest) throws FailedDBUpdateException {
 		int amt = -1;
 		if (transferRequest.getTransactionType() == TransactionType.DEBIT) {
-			amt = bankRepository.debitBankBalance(transferRequest.getAccount().getBankId(),
+			amt = bankRepository.debitBankBalance(transferRequest.getAccountNo(),
 					transferRequest.getAmount());
 
 		}
 		
 		if (transferRequest.getTransactionType() == TransactionType.CREDIT) {
-			amt = bankRepository.creditBankBalance(transferRequest.getAccount().getBankId(),
+			amt = bankRepository.creditBankBalance(transferRequest.getAccountNo(),
 					transferRequest.getAmount());
 		}
 

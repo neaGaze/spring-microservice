@@ -1,17 +1,11 @@
 package com.stargate.ach.service;
 
-import org.springframework.http.ResponseEntity;
-
-import com.stargate.ach.entity.ResponseStatus;
+import com.stargate.ach.business.entity.BLTransaction;
 import com.stargate.ach.entity.Transaction;
 
 public interface ACHService {
-	
-	
 
-	Transaction addTransaction(Transaction any);
+	BLTransaction addTransaction(BLTransaction txn);
 
-
-	Integer updateStatus(Transaction txn,String anyString);
-
+	Integer updateStatus(BLTransaction txn, String anyString);
 }

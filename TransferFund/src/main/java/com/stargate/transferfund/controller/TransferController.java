@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.stargate.transferfund.business.entity.BLTransferRequest;
 import com.stargate.transferfund.entity.ResponseStatus;
 import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransferRequest;
@@ -53,7 +55,7 @@ public class TransferController {
 	 ***/
 	@RequestMapping(value="{bankName}/executeTransfer", method=RequestMethod.POST)
 	public ResponseEntity<ResponseStatus> debitOrCreditAmount(@PathVariable("bankName") String bankName,
-			@RequestBody TransferRequest transferRequest) {
+			@RequestBody BLTransferRequest transferRequest) {
 		ResponseStatus status = new ResponseStatus();
 		String returnStr = "";
 		try {

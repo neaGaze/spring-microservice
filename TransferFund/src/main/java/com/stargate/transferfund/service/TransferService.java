@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.stargate.transferfund.business.entity.BLTransferRequest;
 import com.stargate.transferfund.entity.Bank;
 import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransferRequest;
@@ -15,5 +16,5 @@ public interface TransferService {
 	
 	void transfertoJMS(Transaction transaction);
 	
-	void updateUniTransfer(TransferRequest transferRequest) throws FailedDBUpdateException;
+	void updateUniTransfer(BLTransferRequest transferRequest) throws FailedDBUpdateException;
 }

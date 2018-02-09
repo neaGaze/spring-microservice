@@ -12,6 +12,11 @@ public class Transaction implements Serializable {
 	//@Id
 	//private Integer id;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1036753973149348379L;
+
 	protected Account senderDetails;
 
 	protected Account receiverDetails;

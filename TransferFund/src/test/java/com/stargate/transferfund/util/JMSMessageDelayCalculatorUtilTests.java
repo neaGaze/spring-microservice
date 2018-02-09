@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
@@ -16,22 +17,25 @@ public class JMSMessageDelayCalculatorUtilTests {
 
 	@Test
 	public void whenGivenCurrentTime_thenFindDelayDifferenceSuccess() {
-		Integer delayTime = 3600000;
+		Integer delayTime = 20000;
 		Long expectedTimeInMilli = (long) 0;
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy-dd HH:mm:ss");
 		Date currentTime = null;
 		try {
-			currentTime = sdf.parse("02-2018-01 05:31:00");
-			expectedTimeInMilli = sdf.parse("02-2018-01 06:00:00").getTime();
+			// Uncomment these if you want to set time in milliseconds
+			//Calendar cal = Calendar.getInstance();
+			//cal.setTimeInMillis(1518053848685);
+			//currentTime = cal.getTime();
+			currentTime = sdf.parse("02-2018-01 18:38:13");
+			expectedTimeInMilli = sdf.parse("02-2018-01 18:38:20").getTime();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 
 		Long expectedDifference =  expectedTimeInMilli - currentTime.getTime();
-		
-		Long actualTimeInMilli = JMSMessageDelayCalculatorUtil.getDelayTime(delayTime, currentTime);
-		System.out.println("expectedtime Diff: " + expectedDifference);
-		assertThat(actualTimeInMilli).isEqualTo(expectedDifference);		
+		Long actualTimeDiffInMilli = JMSMessageDelayCalculatorUtil.getDelayTime(delayTime, currentTime);
+		System.out.println("expectedtime Diff: " + (actualTimeDiffInMilli / 1000) + " secs");
+		assertThat(actualTimeDiffInMilli).isEqualTo(expectedDifference);		
 	}
 }
