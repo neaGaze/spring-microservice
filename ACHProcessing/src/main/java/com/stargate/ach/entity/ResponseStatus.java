@@ -1,7 +1,5 @@
 package com.stargate.ach.entity;
 
-import javax.persistence.Entity;
-
 public class ResponseStatus {
 	private String status;
 	private String error;

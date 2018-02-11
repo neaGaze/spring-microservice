@@ -10,11 +10,20 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.stargate.transferfund.logging.BaseLogger;
 
 @RunWith(SpringRunner.class)
 public class JMSMessageDelayCalculatorUtilTests {
 
+	@Mock
+	BaseLogger baseLogger;
+	
+	@Mock
+	JMSMessageDelayCalculatorUtil jmsMessageDelayCalculatorUtil;
+	
 	@Test
 	public void whenGivenCurrentTime_thenFindDelayDifferenceSuccess() {
 		Integer delayTime = 20000;
@@ -34,7 +43,7 @@ public class JMSMessageDelayCalculatorUtilTests {
 		}
 
 		Long expectedDifference =  expectedTimeInMilli - currentTime.getTime();
-		Long actualTimeDiffInMilli = JMSMessageDelayCalculatorUtil.getDelayTime(delayTime, currentTime);
+		Long actualTimeDiffInMilli = jmsMessageDelayCalculatorUtil.getDelayTime(delayTime, currentTime);
 		System.out.println("expectedtime Diff: " + (actualTimeDiffInMilli / 1000) + " secs");
 		assertThat(actualTimeDiffInMilli).isEqualTo(expectedDifference);		
 	}

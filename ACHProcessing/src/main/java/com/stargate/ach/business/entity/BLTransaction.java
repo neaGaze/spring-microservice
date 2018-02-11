@@ -1,25 +1,16 @@
 package com.stargate.ach.business.entity;
 
 import java.io.Serializable;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.stargate.ach.entity.ACHTransaction;
 
 /**
  * 
  */
-@Entity
-@Table(name="transaction")
 public class BLTransaction implements Serializable {
 
 	private static final long serialVersionUID = -4450261208250531230L;
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer transaction_id;
+	private Integer transactionId;
 
 	private String senderDetails;
 	
@@ -31,11 +22,11 @@ public class BLTransaction implements Serializable {
 	
 
 	public Integer getTransactionId() {
-		return transaction_id;
+		return transactionId;
 	}
 
 	public void setTransactionId(Integer transactionId) {
-		this.transaction_id = transactionId;
+		this.transactionId = transactionId;
 	}
 	
 	public String getSenderDetails() {
@@ -68,5 +59,20 @@ public class BLTransaction implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "BLTransaction [transaction_id=" + transactionId + ", senderDetails=" + senderDetails
+				+ ", receiverDetails=" + receiverDetails + ", amount=" + amount + ", status=" + status + "]";
+	}
+	
+	public ACHTransaction convertBLIntoDBEntity() {
+		ACHTransaction transaction = new ACHTransaction();
+		transaction.setAmount(this.getAmount());
+		transaction.setReceiverDetails(this.getReceiverDetails());
+		transaction.setSenderDetails(this.getSenderDetails());
+		transaction.setStatus(this.getStatus());
+		return transaction;
 	}
 }

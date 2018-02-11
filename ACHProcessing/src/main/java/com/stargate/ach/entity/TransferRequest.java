@@ -2,8 +2,13 @@ package com.stargate.ach.entity;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import com.stargate.ach.business.entity.BLTransaction;
 
+@Component
 public class TransferRequest implements Serializable {
 
 	private static final long serialVersionUID = 2723481588648225244L;
@@ -13,6 +18,14 @@ public class TransferRequest implements Serializable {
 	protected Double amount;
 
 	protected TransactionType transactionType;
+	
+	@Autowired
+	@Qualifier("debitTransferRequest")
+	private TransferRequest debitTransferRequest;
+
+	@Autowired
+	@Qualifier("creditTransferRequest")
+	private TransferRequest creditTransferRequest;
 	
 	public String getAccount() {
 		return accountNo;
@@ -46,23 +59,23 @@ public class TransferRequest implements Serializable {
 		this.transactionType = transactionType;
 	}
 	
-	public static TransferRequest buildDebitTransferRequest(BLTransaction txn) {
-		TransferRequest transferRequest = new TransferRequest();
+	public void buildDebitTransferRequest(BLTransaction txn) {
+		//TransferRequest transferRequest = new TransferRequest();
 		// TODO assumption: sender is always the debitor
-		transferRequest.setAccountNo(txn.getSenderDetails()); 
-		transferRequest.setAmount(txn.getAmount());
-		transferRequest.setTransactionType(TransactionType.DEBIT);
-		return transferRequest;
+		debitTransferRequest.setAccountNo(txn.getSenderDetails()); 
+		debitTransferRequest.setAmount(txn.getAmount());
+		debitTransferRequest.setTransactionType(TransactionType.DEBIT);
+		//return transferRequest;
 	}
 	
 
-	public static TransferRequest buildCreditTransferRequest(BLTransaction txn) {
-		TransferRequest transferRequest = new TransferRequest();
+	public void buildCreditTransferRequest(BLTransaction txn) {
+		//TransferRequest transferRequest = new TransferRequest();
 		// TODO assumption: sender is always the creditor
-		transferRequest.setAccountNo(txn.getReceiverDetails()); 
-		transferRequest.setAmount(txn.getAmount());
-		transferRequest.setTransactionType(TransactionType.CREDIT);
-		return transferRequest;
+		creditTransferRequest.setAccountNo(txn.getReceiverDetails()); 
+		creditTransferRequest.setAmount(txn.getAmount());
+		creditTransferRequest.setTransactionType(TransactionType.CREDIT);
+		//return transferRequest;
 	}
 	
 	@Override

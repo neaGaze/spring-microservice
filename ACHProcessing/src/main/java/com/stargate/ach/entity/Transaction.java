@@ -3,18 +3,22 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-@Entity
+
+/*
+ * OBSOLETE CLASS
+ * 
+ * @Entity
 @Table(name="transaction")
-public class Transaction implements Serializable {
+*/public class Transaction implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3422503593095843897L;
 
-	@Id
+	/*@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer transaction_id;
+	*/private Integer transaction_id;
 	
 	@Transient
 	private Account senderDetails;

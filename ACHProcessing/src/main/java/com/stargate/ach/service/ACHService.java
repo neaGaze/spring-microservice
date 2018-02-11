@@ -5,7 +5,7 @@ import com.stargate.ach.entity.Transaction;
 
 public interface ACHService {
 
-	BLTransaction addTransaction(BLTransaction txn);
+	void addTransaction(BLTransaction txn);
 
-	Integer updateStatus(BLTransaction txn, String anyString);
+	Integer updateStatus(BLTransaction transactionWithStatus, String updatedStatus);
 }

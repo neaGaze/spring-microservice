@@ -20,6 +20,7 @@ import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransactionType;
 import com.stargate.transferfund.entity.TransferRequest;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
+import com.stargate.transferfund.logging.BaseLogger;
 import com.stargate.transferfund.repository.BankRepository;
 
 @RunWith(SpringRunner.class)
@@ -36,6 +37,9 @@ public class TransferServiceImplTests {
 	
 	@Mock
 	private RestTemplate restTemplate;
+	
+	@Mock
+	private BaseLogger logger;
 	
 	@Rule
 	public EmbeddedJMSResource resource = new EmbeddedJMSResource();
@@ -121,7 +125,6 @@ public class TransferServiceImplTests {
 		
 		Transaction transaction = new Transaction();
 		transaction.setAmount(59.99);
-		
 		//boolean actualResult = false;
 		try {
 			 transferServiceImpl.transfertoJMS(transaction);

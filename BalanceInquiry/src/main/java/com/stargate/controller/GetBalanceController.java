@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.stargate.entity.Bank;
 import com.stargate.exception.AccountDoesNotExistException;
+import com.stargate.logging.ConsoleLogger;
 import com.stargate.repository.GetBalanceRepository;
 
 import java.util.List;
@@ -29,10 +30,20 @@ public class GetBalanceController {
 	
 	@GetMapping(path="/find")
 	public @ResponseBody Bank getBank (@RequestParam String account_no) {
-		Bank account=getBalanceRepository.findBalance(account_no);
-		if(account==null) {
-			throw new AccountDoesNotExistException("account number: " +account_no+" does not exist ");
+		ConsoleLogger controllerLogger = new ConsoleLogger(GetBalanceController.class.getName(), "Control is at GetBalanceController()");
+		
+		Bank account = getBalanceRepository.findBalance(account_no);
+		
+		if(account == null) {
+			AccountDoesNotExistException excep = new AccountDoesNotExistException("account number: " + account_no + " does not exist ");
+			try {
+				throw excep;
+			} catch (AccountDoesNotExistException e) {
+				excep.setLogger(controllerLogger);				
+			}
 		}
+		
+		controllerLogger.writeLogs();
 		return account;
 	}
 

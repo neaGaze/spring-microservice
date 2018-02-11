@@ -2,6 +2,7 @@ package com.stargate.transferfund.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,13 @@ public class BankRepositoryTests {
 	@Autowired
 	BankRepository bankRepository;
 	
+	@Before
+	public void setUp() {
+		
+	}
+	
 	@Test
-	public void whenDebit_DataModifySuccess() {
+	public void whenDebit_thenDataModifySuccess() {
 		
 		 // given
 	    Bank bank = new Bank();
@@ -43,6 +49,30 @@ public class BankRepositoryTests {
 	    // when
 	    //Employee found = employeeRepository.findByName(alex.getName());
 	    int result = bankRepository.debitBankBalance("12345", new Double(1000));
+	    
+	    // then
+		assertThat(result).isEqualTo(1);
+	}
+	
+	@Test
+	public void givenCredit_whenInSufficientFund_DataTransferFails() {
+		
+		 // given
+	    Bank bank = new Bank();
+	    //bank.setBankId(101);
+	    bank.setAccountType("SAVINGS");
+	    bank.setAccountNo("12345");
+	    bank.setAvailableBalance(500.0);
+	    bank.setBankName("Bank of New Mexico");
+	    bank.setRoutingNo("23435345");
+	    bank.setCustomerId(5);
+	    
+	    entityManager.persist(bank);
+	    entityManager.flush();
+	 
+	    // when
+	    //Employee found = employeeRepository.findByName(alex.getName());
+	    int result = bankRepository.creditBankBalance("12345", new Double(1000));
 	    
 	    // then
 		assertThat(result).isEqualTo(1);

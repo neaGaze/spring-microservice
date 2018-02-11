@@ -10,6 +10,7 @@ import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransferRequest;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.exception.InvalidRequestException;
+import com.stargate.transferfund.logging.BaseLogger;
 
 public interface TransferService {
 	List<Bank> findAll();
