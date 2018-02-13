@@ -2,12 +2,6 @@ package com.stargate.transferfund.entity;
 
 public class TransferRequest {
 
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return amount+ "";
-	}
-
 	protected Account account;
 
 	protected Double amount;
@@ -37,5 +31,10 @@ public class TransferRequest {
 
 	public void setTransactionType(TransactionType transactionType) {
 		this.transactionType = transactionType;
+	}
+
+	@Override
+	public String toString() {
+		return amount+ "";
 	}
 }

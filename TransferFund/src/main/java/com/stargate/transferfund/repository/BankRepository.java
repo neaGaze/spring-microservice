@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.stargate.transferfund.entity.Account;
 import com.stargate.transferfund.entity.Bank;
 
 @Repository
@@ -28,4 +30,9 @@ public interface BankRepository extends CrudRepository<Bank, Integer> {
 	@Modifying 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 	int creditBankBalance(String accountNo,  Double amount);
+	
+
+	@Query(value="SELECT b FROM Bank b WHERE b.accountNo = :#{#incompleteBankEntity.accountNumber} and b.routingNo = :#{#incompleteBankEntity.routingNumber} and b.bankName = :#{#incompleteBankEntity.bankName}")
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	Bank findValidBank(@Param("incompleteBankEntity") Account incompleteBankEntity);
 }

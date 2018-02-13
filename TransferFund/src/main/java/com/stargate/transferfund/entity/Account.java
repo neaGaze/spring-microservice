@@ -2,11 +2,12 @@ package com.stargate.transferfund.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Account implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8037457591560408608L;
 
 	private Integer bankId;
 	

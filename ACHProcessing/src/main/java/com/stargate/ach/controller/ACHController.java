@@ -6,22 +6,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import com.stargate.ach.business.entity.BLTransaction;
 import com.stargate.ach.entity.PersistResponseStatus;
 import com.stargate.ach.entity.ResponseStatus;
 import com.stargate.ach.entity.TransferRequest;
+import com.stargate.ach.exception.DBUpdateFailException;
 import com.stargate.ach.exception.MulitpleDBRowEffectedException;
 import com.stargate.ach.logging.BaseLogger;
 import com.stargate.ach.service.ACHService;
+import com.stargate.ach.validator.BLTransactionValidator;
 
 @RestController
-@RequestMapping("ach")
+@RequestMapping("/ach")
 public class ACHController {
 
 	@Autowired
@@ -44,6 +48,9 @@ public class ACHController {
 	@Value("${stargate.userstory2.ipaddress}")
 	String address;
 
+	@Autowired
+	private BLTransactionValidator blTransactionValidator;
+
 	/***
 	 * Builds the Uri for accessing the `executeTransfer` towards US-2 endpoints
 	 ***/
@@ -52,13 +59,18 @@ public class ACHController {
 		return url;
 	}
 
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(blTransactionValidator);
+	}
+
 	/***
 	 * This method will receive input from the Mule Flow after the scatter-gather
 	 * segregates the list of transactions. Each transaction will be sent to this
 	 * endpoint through RESTful webservice from Mule
 	 ****/
 	@PostMapping("/persist")
-	public ResponseEntity<ResponseStatus> persistTransfer(@RequestBody BLTransaction txn) {
+	public ResponseEntity<ResponseStatus> persistTransfer(@RequestBody @Validated BLTransaction txn) {
 
 		PersistResponseStatus respStatus = new PersistResponseStatus("SUCCESS : Data Persisted", "");
 
@@ -71,19 +83,25 @@ public class ACHController {
 
 		// save it in the transaction table
 		service.addTransaction(txn);
-		int sts = service.updateStatus(txn, txn.getStatus());
-		respStatus.setPersistId(txn.getTransactionId());
-		if (sts > 1) {
+
+		int sts = -1;
+		try {
+			sts = service.updateStatus(txn, txn.getStatus());
+		} catch (DBUpdateFailException e) {
+			respStatus.setStatus("FAIL");
+			respStatus.setError(respStatus.getError() + "\n"
+					+ "some problems with transactionId. It is possible that the autogeneration of Id failed");
+			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
+		} catch (MulitpleDBRowEffectedException e) {
 			respStatus.setStatus("FAIL");
 			respStatus.setError(MulitpleDBRowEffectedException.getMesg());
 			persistLogger
 					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
-		}
+		} finally {
 
-		if (sts <= 0) {
-			respStatus.setStatus("FAIL");
-			respStatus.setError("Data Persist Failed");
-			persistLogger.appendMessages("The data failed to persist due to some unexpected errors");
+			persistLogger.appendMessages(((sts == 1) ? "Updated" : "Failed to update") + " the transaction status! ");
+
+			respStatus.setPersistId(txn.getTransactionId());
 		}
 
 		persistLogger.writeLogs();
@@ -96,14 +114,33 @@ public class ACHController {
 	}
 
 	@PostMapping("/deliver-to-sender")
-	public ResponseEntity<ResponseStatus> deliverRequestToSenderTransfer(@RequestBody BLTransaction txn) {
+	public ResponseEntity<ResponseStatus> deliverRequestToSenderTransfer(@RequestBody @Validated BLTransaction txn) {
+
+		// Default status is `InProgress`, change it into `HOLD` until the debit has
+		// been successful. If it fails nothing happens
+		int sts = -1;
+		try {
+			sts = service.updateStatus(txn, "HOLD");
+		} catch (DBUpdateFailException e) {
+			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
+			return new ResponseEntity<ResponseStatus>(new ResponseStatus("FAIL", "transactionId is Incorrect"),
+					HttpStatus.ACCEPTED);
+		} catch (MulitpleDBRowEffectedException e) {
+			persistLogger
+					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
+			return new ResponseEntity<ResponseStatus>(
+					new ResponseStatus("FAIL", "MulitpleDBRowEffectedException.getMesg()"), HttpStatus.ACCEPTED);
+		} finally {
+			persistLogger.appendMessages(
+					((sts == 1) ? "Updated" : "Failed to update") + " the transaction status to HOLD! ");
+		}
 
 		// create a new TransferRequest POJO from the Transaction entity for the sender.
 		// TODO we have assumed here that the sender is always DEBIT
 		debitTransferRequest.buildDebitTransferRequest(txn);
 
-		persistLogger.appendMessages("Received BLTransaction object is: "+txn.toString());
-		
+		persistLogger.appendMessages("Received BLTransaction object is: " + txn.toString());
+
 		// URL to send the request to SENDER Bank
 		String url = UriBuilder(debitTransferRequest.getAccountNo());
 		ResponseEntity<TransferRequest> entity = new ResponseEntity<TransferRequest>(debitTransferRequest,
@@ -120,24 +157,27 @@ public class ACHController {
 		persistLogger.appendMessages("Received the response from endpoint with body " + responseStatus.getStatus() + " "
 				+ responseStatus.getError());
 
-		// handling the case where the response received is FAIL
+		// change the txn status where the response received is FAIL
+		String txnSaveStatus = txn.getStatus();
 		if (responseStatus.getStatus().equals("FAIL")) {
+			txnSaveStatus = "FAIL to " + debitTransferRequest.getTransactionType() + " sender";
+		}
 
-			// update only if the status is FAIL, that is the only reason the status will
-			// change. Default status is `InProgress`
-			int sts = service.updateStatus(txn, "FAIL to " + debitTransferRequest.getTransactionType() + " sender");
-			if (sts > 1) {
-				responseStatus.setError(responseStatus.getError() + "\n" + MulitpleDBRowEffectedException.getMesg());
-				persistLogger.appendMessages(
-						"While persisting data multiple rows were effected. This is not a desired result");
-			}
-
-			if (sts <= 0) {
-				responseStatus.setError(responseStatus.getError() + "\n" + "Data Persist Failed");
-				persistLogger.appendMessages("The status change failed to persist due to some unexpected errors");
-			}
-
-			persistLogger.appendMessages("Updated the transaction status with result as " + sts);
+		sts = -1;
+		try {
+			sts = service.updateStatus(txn, txnSaveStatus);
+		} catch (DBUpdateFailException e) {
+			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
+			responseStatus.setStatus("FAIL");
+			responseStatus.setError(responseStatus.getError() + "transactionId is Incorrect");
+		} catch (MulitpleDBRowEffectedException e) {
+			persistLogger
+					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
+			responseStatus.setStatus("FAIL");
+			responseStatus.setError(responseStatus.getError() + "MulitpleDBRowEffectedException.getMesg()");
+		} finally {
+			persistLogger.appendMessages(
+					((sts == 1) ? "Updated" : "Failed to update") + " the transaction status to `InProgress`! ");
 		}
 
 		persistLogger.writeLogs();
@@ -145,7 +185,26 @@ public class ACHController {
 	}
 
 	@PostMapping("/deliver-to-receiver")
-	public ResponseEntity<ResponseStatus> deliverRequestToReceiverTransfer(@RequestBody BLTransaction txn) {
+	public ResponseEntity<ResponseStatus> deliverRequestToReceiverTransfer(@RequestBody @Validated BLTransaction txn) {
+
+		// Default status is `InProgress`, change it into `HOLD` until the credit has
+		// been successful. If it fails nothing happens
+		int sts = -1;
+		try {
+			sts = service.updateStatus(txn, "HOLD");
+		} catch (DBUpdateFailException e) {
+			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
+			return new ResponseEntity<ResponseStatus>(new ResponseStatus("FAIL", "transactionId is Incorrect"),
+					HttpStatus.ACCEPTED);
+		} catch (MulitpleDBRowEffectedException e) {
+			persistLogger
+					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
+			return new ResponseEntity<ResponseStatus>(
+					new ResponseStatus("FAIL", "MulitpleDBRowEffectedException.getMesg()"), HttpStatus.ACCEPTED);
+		} finally {
+			persistLogger.appendMessages(
+					((sts == 1) ? "Updated" : "Failed to update") + " the transaction status to HOLD! ");
+		}
 
 		// create a new TransferRequest POJO from the Transaction entity for the
 		// receiver.
@@ -168,26 +227,28 @@ public class ACHController {
 		persistLogger.appendMessages("Received the response from endpoint with body " + responseStatus.getStatus() + " "
 				+ responseStatus.getError());
 
-		// handling the case where the response received is FAIL
+		String txnSaveStatus = txn.getStatus();
 		if (responseStatus.getStatus().equals("FAIL")) {
-
-			// update only if the status is FAIL, that is the only reason the status will
-			// change. Default status is `InProgress`
-			int sts = service.updateStatus(txn, "FAIL to " + creditTransferRequest.getTransactionType() + " receiver");
-			if (sts > 1) {
-				responseStatus.setError(responseStatus.getError() + "\n" + MulitpleDBRowEffectedException.getMesg());
-				persistLogger.appendMessages(
-						"While persisting data multiple rows were effected. This is not a desired result");
-			}
-
-			if (sts <= 0) {
-				responseStatus.setError(responseStatus.getError() + "\n" + "Data Persist Failed");
-				persistLogger.appendMessages("The data failed to persist due to some unexpected errors");
-			}
-
-			persistLogger.appendMessages("Updated the transaction status with result as " + sts);
+			txnSaveStatus = "FAIL to " + creditTransferRequest.getTransactionType() + " receiver";
 		}
-		
+
+		sts = -1;
+		try {
+			sts = service.updateStatus(txn, txnSaveStatus);
+		} catch (DBUpdateFailException e) {
+			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
+			responseStatus.setStatus("FAIL");
+			responseStatus.setError(responseStatus.getError() + "\n transactionId is Incorrect");
+		} catch (MulitpleDBRowEffectedException e) {
+			persistLogger
+					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
+			responseStatus.setStatus("FAIL");
+			responseStatus.setError(responseStatus.getError() + "\n MulitpleDBRowEffectedException.getMesg()");
+		} finally {
+			persistLogger.appendMessages(
+					((sts == 1) ? "Updated" : "Failed to update") + " the transaction status to `InProgress`! ");
+		}
+
 		persistLogger.writeLogs();
 		return new ResponseEntity<ResponseStatus>(responseStatus, HttpStatus.ACCEPTED);
 	}

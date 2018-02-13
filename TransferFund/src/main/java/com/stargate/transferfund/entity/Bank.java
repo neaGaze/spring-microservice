@@ -1,5 +1,7 @@
 package com.stargate.transferfund.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +11,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "bank", schema = "ach_stargate")
-public class Bank {
+public class Bank implements Serializable {
+	
+	private static final long serialVersionUID = -6985788629321219265L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -84,6 +88,13 @@ public class Bank {
 
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
+	}
+
+	@Override
+	public String toString() {
+		return "Bank [bankId=" + bankId + ", customerId=" + customerId + ", bankName=" + bankName + ", accountNo="
+				+ accountNo + ", routingNo=" + routingNo + ", availableBalance=" + availableBalance + ", accountType="
+				+ accountType + "]";
 	}
 
 }

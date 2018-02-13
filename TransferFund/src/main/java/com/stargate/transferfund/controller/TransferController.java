@@ -1,10 +1,14 @@
 package com.stargate.transferfund.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +21,9 @@ import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.logging.BaseLogger;
 import com.stargate.transferfund.service.TransferService;
+import com.stargate.transferfund.validator.TransactionValidator;
+import com.stargate.transferfund.validator.TransferRequestValidator;
+import com.stargate.transferfund.validator.ValidatorRouter;
 
 @Controller
 @RequestMapping("transferfunds")
@@ -31,10 +38,21 @@ public class TransferController {
 	
 	@Autowired
 	private BaseLogger executeTransferLogger;
+/*	
+	@Autowired
+	private TransactionValidator transactionValidator;
+
+	@Autowired
+	private TransferRequestValidator transferRequestValidator;
+*/
+	
+	@Autowired
+	private ValidatorRouter validatorRouter;
 	
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
 		// like an initializer
+		binder.addValidators(validatorRouter);		
 	}
 	
 	/**
@@ -44,11 +62,24 @@ public class TransferController {
 	 ***/
 	@RequestMapping(value="/{bankId}/initiateTransfer", method=RequestMethod.POST)
 	public ResponseEntity<ResponseStatus> getTransferDetails(@PathVariable("bankId") String bankId,
-			@RequestBody Transaction transaction) {
+			@RequestBody @Validated Transaction transaction, BindingResult bindingResult) {
 
+		ResponseStatus status = new ResponseStatus("SUCCESS", "");
+		
+		if(bindingResult.hasErrors()) {
+			status.setStatus("FAIL");
+			status.setError(bindingResult.getAllErrors().get(0).getCode());
+		    return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);
+		}
+		
+		if(! transferService.checkIfValid(transaction)) {
+			status.setStatus("FAIL");
+			status.setError("No such data exists in the database");
+		    return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);
+		}
+		
 		transferService.transfertoJMS(transaction);
 		initiateTransferLogger.appendMessages("Transaction amount: "+transaction.getAmount());
-		ResponseStatus status = new ResponseStatus("SUCCESS", "");
 		initiateTransferLogger.writeLogs();
 	    return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);
     }
@@ -61,8 +92,14 @@ public class TransferController {
 	 ***/
 	@RequestMapping(value="{bankName}/executeTransfer", method=RequestMethod.POST)
 	public ResponseEntity<ResponseStatus> debitOrCreditAmount(@PathVariable("bankName") String bankName,
-			@RequestBody BLTransferRequest transferRequest) {
+			@RequestBody @Validated BLTransferRequest transferRequest, BindingResult bindingResult) {
 		ResponseStatus status = new ResponseStatus();
+		
+		if(bindingResult.hasErrors()) {
+			status.setStatus("FAIL");
+			status.setError(bindingResult.getAllErrors().get(0).getCode());
+		}
+		
 		executeTransferLogger.appendMessages("Executing the " + transferRequest.getTransactionType() + " request...");
 		
 		try {

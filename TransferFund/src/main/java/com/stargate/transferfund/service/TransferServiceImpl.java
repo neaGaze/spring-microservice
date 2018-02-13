@@ -1,14 +1,12 @@
 package com.stargate.transferfund.service;
 
 import java.util.Calendar;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import com.stargate.transferfund.business.entity.BLTransaction;
 import com.stargate.transferfund.business.entity.BLTransferRequest;
-import com.stargate.transferfund.entity.Bank;
 import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.entity.TransactionType;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
@@ -21,15 +19,15 @@ public class TransferServiceImpl implements TransferService {
 	
 	@Autowired
 	private BaseLogger transferToJMSLogger;
+
+	@Autowired
+	private BaseLogger updateUniDirTransferLogger;
 	
 	@Autowired
 	private JMSMessageDelayCalculatorUtil jmsMessageDelayCalculatorUtil;
 	
 	@Autowired
 	private BLTransaction blTransaction;
-	
-	@Autowired
-	private BaseLogger updateUniDirTransferLogger;
 	
 	@Autowired
 	private BankRepository bankRepository;
@@ -48,29 +46,6 @@ public class TransferServiceImpl implements TransferService {
 	
 	public TransferServiceImpl() {
 		
-	}
-	
-	@Override
-	public List<Bank> findAll() {
-		List<Bank> listBank = bankRepository.findAll();
-		for (int i = 0; i < listBank.size(); i++) {
-			System.out.println(listBank.get(i).getBankName());
-		}
-		/*
-		 * HttpEntity<Transaction> request = new HttpEntity<Transaction>(transaction);
-		 * ResponseEntity<ResponseStatus> response = null; try { response =
-		 * restTemplate.exchange("http://www.google.com", HttpMethod.POST, request,
-		 * ResponseStatus.class);
-		 * 
-		 * } catch(Exception ex) { System.out.println(ex.getMessage()); }
-		 * 
-		 * if(response.getStatusCode() == HttpStatus.METHOD_NOT_ALLOWED) throw new
-		 * InvalidRequestException();
-		 * 
-		 * ResponseStatus status = response.getBody(); if(status.getStatus() ==
-		 * "Success") return true; else return false;
-		 */
-		return listBank;
 	}
 
 	/******************************************************
@@ -112,5 +87,12 @@ public class TransferServiceImpl implements TransferService {
 		else 
 			updateUniDirTransferLogger.appendMessages(transferRequest.getTransactionType() + "ing bank balance for " +
 				" for the account no: " + transferRequest.getAccountNo() + " with amount $" + transferRequest.getAmount());
+	}
+
+	@Override
+	public boolean checkIfValid(Transaction transaction) {
+		if(bankRepository.findValidBank(transaction.getSenderDetails()) != null) 
+			return true;
+		return false;
 	}
 }

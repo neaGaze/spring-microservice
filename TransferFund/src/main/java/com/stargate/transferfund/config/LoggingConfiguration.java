@@ -63,13 +63,12 @@ public class LoggingConfiguration {
 	
 	@Bean("blTransaction")
 	public BLTransaction blTransaction() {return new BLTransaction();}
-	/*
-	@Bean(name="failedDBUpdateExceptionLogger")
-	@DependsOn("updateUniDirTransferLogger")
-	public BaseLogger failedDBUpdateExceptionLogger(BaseLogger updateUniDirTransferLogger) {
-		BaseLogger failedDBUpdateException = new ConsoleLogger(FailedDBUpdateException.class, "");
-		updateUniDirTransferLogger.setSuccessor(failedDBUpdateException);
-		return failedDBUpdateException;
-	}
-	*/
+/*
+	@Bean("bankValidCheckLogger")
+	@DependsOn("initiateTransferLogger")
+	public BaseLogger bankValidCheckLogger(BaseLogger initiateTransferLogger) {
+		BaseLogger bankValidCheckLogger =  new ConsoleLogger(TransferServiceImpl.class, "");
+		initiateTransferLogger.setSuccessor(bankValidCheckLogger);
+		return bankValidCheckLogger;
+	}*/
 }
