@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  db:
+    build:
+      context: ./Database/
+      dockerfile: DockerFile
+    image: neagaze/mysql-ach-stargate-2
+    ports:
+      - 8081:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=ach_stargate
+    expose:
+      - "3306"
+    cpu_shares: 100
+    mem_limit: 262144000
+      
+  balance-inquiry:
+    build:
+      context: ./BalanceInquiry/
+      dockerfile: DockerFile
+    image: neagaze/stargate-balance-inquirer-2
+    ports:
+      - 8082:8080
+    expose:
+      - "8080"
+    cpu_shares: 100
+    mem_limit: 262144000
+    links:
+      - db
+      

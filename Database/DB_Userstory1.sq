@@ -1,0 +1,88 @@
+/*create customer table*/
+create database ach_stargate;
+use ach_stargate;
+
+CREATE TABLE `ach_stargate`.`customer` (
+  `customer_id` INT NOT NULL AUTO_INCREMENT,
+  `first_name` VARCHAR(45) NOT NULL,
+  `last_name` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(100) NULL,
+  `phone_no` VARCHAR(20) NULL,
+  `email_id` VARCHAR(45) NULL,
+  PRIMARY KEY (`customer_id`));
+
+/*create bank table*/
+
+CREATE TABLE `ach_stargate`.`bank` (
+  `bank_id` INT NOT NULL,
+  `customer_id` INT NOT NULL,
+  `bank_name` VARCHAR(45) NOT NULL,
+  `account_no` VARCHAR(20) NOT NULL,
+  `routing_no` VARCHAR(20) NOT NULL,
+  `available_balance` DOUBLE NOT NULL,
+  `account_type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`bank_id`));
+
+/*adding foreign key to bank table*/
+
+ALTER TABLE `ach_stargate`.`bank` 
+ADD INDEX `FK_customer_id_idx` (`customer_id` ASC);
+ALTER TABLE `ach_stargate`.`bank` 
+ADD CONSTRAINT `FK_customer_id`
+  FOREIGN KEY (`customer_id`)
+  REFERENCES `ach_stargate`.`customer` (`customer_id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+  
+
+
+/*inserting rows into customer table*/
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('1', 'Jacquelyn', 'Huisman', '332 Prairie Avenue \nGrand Blanc, MI 48439\n', '(210) 474-4922', 'jacquelyn.huisman@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('2', 'Walker', 'Segers', '64 W. Blackburn Ave. Silver Spring, MD 20901', '(716) 945-9481', 'WalkerSegers@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('3', 'Ismael', 'Villafane', '965 Euclid Drive Oklahoma City, OK 73112', '(779) 755-5233', 'IsmaelVillafane@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('4', 'Karey', 'Mattingly', '6 W. Devonshire St. North Bergen, NJ 07047', '(573) 958-1409', 'KareyMattingly@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('5', 'Laurine', 'Ravenell', '9234 Monroe St. Hamilton, OH 45011', '(518) 906-9463', 'LaurineRavenell@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('6', 'Nicholle', 'Ryerson', '7 Princess Lane Batavia, OH 45103', '(860) 864-1416', 'NicholleRyerson@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('7', 'Charmain', 'Lipford', '59 Winchester Avenue Moncks Corner, SC 29461', '(810) 846-8496', 'CharmainLipford@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('8', 'Ricky', 'Gowdy', '7893 Linden Ave. Grayslake, IL 60030', '(563) 328-1281', 'RickyGowdy@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('9', 'Elizebeth', 'Caverly', '163 Fifth Ave. Garfield, NJ 07026', '(845) 458-0998', 'ElizebethCaverly@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('10', 'Brook', 'Rothstein', '7768 Central Dr. Maryville, TN 37803', '(518) 185-8652', 'BrookRothstein@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('11', 'Bobby', 'Dummer', '8187 South St. Smyrna, GA 30080', '(620) 986-6199', 'BobbyDummer@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('12', 'Lorie', 'Wenner', '800 East Linden Ave. Santa Cruz, CA 95060', '(479) 182-2541', 'LorieWenner@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('13', 'Britteny', 'Sink', '7405 East Mechanic Dr. Snohomish, WA 98290', '(320) 862-4479', 'BrittenySink@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('14', 'Taren', 'Sauls', '43 Plumb Branch Road Norwich, CT 06360', '(785) 356-6623', 'TarenSauls@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('15', 'Stormy', 'Urbanski', '9370 Wentworth Court Powder Springs, GA 30127', '(617) 125-4694', 'StormyUrbanski@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('16', 'Pearlie', 'Bizzell', '9477 Logan St. Memphis, TN 38106', '(541) 259-8567', 'PearlieBizzell@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('17', 'Stacee', 'Bellew', '8382 St Louis St. Norman, OK 73072', '(909) 973-1739', 'StaceeBellew@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('18', 'Alva', 'Mcgrail', '832 Highland Lane Arvada, CO 80003', '(423) 610-9223', 'AlvaMcgrail@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('19', 'Leana', 'Sherrow', '190 East Wagon St. Cranford, NJ 07016', '(681) 671-0096', 'LeanaSherrow@gmail.com');
+INSERT INTO `ach_stargate`.`customer` (`customer_id`, `first_name`, `last_name`, `address`, `phone_no`, `email_id`) VALUES ('20', 'Gaylord', 'Lovin', '9209 Piper Street Groton, CT 06340', '(972) 341-3232', 'GaylordLovin@gmail.com');
+
+
+/*inserting rows into bank table*/
+
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('101', '5', 'Citizen Service Bank ', '5784280195134310', '228199559', '3258.00', 'checking');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('102', '12', 'Ascension Bank', '3593359822843810', '297780350', '1347.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('103', '17', 'Repose Holdings Bnak', '2413116579431930', '190794803', '4558.00', 'checking');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('104', '7', 'Midland Bank ', '7064689794255120', '246694504', '8353.00', 'checking');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('105', '5', 'New Edge Bank', '6391245699115150', '241408768', '2439.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('106', '1', 'City Ward Bank', '8898384283508000', '175491203', '3242.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('107', '16', 'Kindred Bank', '5351778396072530', '260877807', '4831.00', 'checking');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('108', '2', 'City Ward Bank', '9741792350589470', '282374075', '5500.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('109', '15', 'Citizen Service Bank ', '6590168499992250', '189517912', '1562.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('110', '6', 'Midland Bank ', '2248734357879480', '247977176', '2826.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('111', '17', 'Citizen Service Bank ', '5791445200722250', '219669604', '411.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('112', '14', 'Citizen Service Bank ', '6889843530771100', '290587742', '1889.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('113', '4', 'Repose Holdings Bnak', '4838016857014070', '248410966', '2418.00', 'checking');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('114', '18', 'Ascension Bank', '5140465010797900', '282444772', '1455.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('115', '9', 'New Edge Bank', '3990435879343290', '223244274', '4483.00', 'checking');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('116', '10', 'Repose Holdings Bnak', '8966551917187920', '232846069', '90.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('117', '12', 'Citizen Service Bank ', '4440487065970290', '200954094', '2150.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('118', '11', 'Ascension Bank', '3054885489604910', '144883663', '2656.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('119', '13', 'Citizen Service Bank ', '1980059152930360', '161098820', '689.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('120', '8', 'City Ward Bank', '5071582483230180', '200056515', '5506.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('121', '19', 'Repose Holdings Bnak', '6927443765853850', '132747393', '8689.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('122', '3', 'Midland Bank ', '9352070850211940', '227848167', '3653.00', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('123', '8', 'Kindred Bank', '8224620395672060', '173054315', '7543', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('124', '10', 'Midland Bank ', '1701831021276890', '297857422', '3368', 'savings');
+INSERT INTO `ach_stargate`.`bank` (`bank_id`, `customer_id`, `bank_name`, `account_no`, `routing_no`, `available_balance`, `account_type`) VALUES ('125', '20', 'Repose Holdings Bnak', '9.10855E+15', '256433716', '5941', 'savings');

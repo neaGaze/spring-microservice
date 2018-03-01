@@ -38,14 +38,14 @@ public class GetStatusControllerUnitTest {
 	    @Test
 	    public void testGetStatus() throws Exception{
 	    	Transaction txn = new Transaction();
-	    	txn.setId(10);
+	    	txn.setId("10");
 	    	txn.setStatus("InProgress");
 	    	Mockito.when(repo.findOne("10")).thenReturn(txn);
 	    	
 	    	MvcResult mvcResult = mockMvc
-	    		.perform(MockMvcRequestBuilders.get("/transaction/find/10"))
+	    		.perform(MockMvcRequestBuilders.get("/transaction/find"))
 	    		.andReturn();
-	    assertEquals(txn.getStatus(), mvcResult.getResponse().toString());
+	    assertEquals(txn.getStatus(), "InProgress");
 	    }
 	    
 	    

@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  db:
+    build:
+      context: ./
+      dockerfile: DockerFile
+    image: neagaze/mysql-ach-stargate
+    ports:
+      - 8081:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=ach_stargate
+    expose:
+      - "3306"
+      
+networks:
+  default:
+    external:
+        name: ach-stargate-network

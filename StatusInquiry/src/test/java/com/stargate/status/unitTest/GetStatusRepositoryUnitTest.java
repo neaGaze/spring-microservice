@@ -23,7 +23,7 @@ public class GetStatusRepositoryUnitTest {
     @Test
     public void testFindStatus() {
         Transaction txn = new Transaction();
-        txn.setId(10);
+        txn.setId("10");
     	txn.setStatus("Success");
         entityManager.persist(txn);
         entityManager.flush();

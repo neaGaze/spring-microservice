@@ -4,21 +4,21 @@ public class ResponseStatus {
 
 	private String status;
 	
-	private String error;
+	private String message;
 	
 	public ResponseStatus() {}
 	
 	public ResponseStatus(String status, String error) {
 		this.status = status;
-		this.error = error;
+		this.message = error;
 	}
 	
-	public String getError() {
-		return error;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setError(String error) {
-		this.error = error;
+	public void setMessage(String error) {
+		this.message = error;
 	}
 
 	public String getStatus() {

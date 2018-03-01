@@ -1,7 +1,5 @@
 package com.stargate.transferfund.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,8 +19,6 @@ import com.stargate.transferfund.entity.Transaction;
 import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.logging.BaseLogger;
 import com.stargate.transferfund.service.TransferService;
-import com.stargate.transferfund.validator.TransactionValidator;
-import com.stargate.transferfund.validator.TransferRequestValidator;
 import com.stargate.transferfund.validator.ValidatorRouter;
 
 @Controller
@@ -68,13 +64,13 @@ public class TransferController {
 		
 		if(bindingResult.hasErrors()) {
 			status.setStatus("FAIL");
-			status.setError(bindingResult.getAllErrors().get(0).getCode());
+			status.setMessage(bindingResult.getAllErrors().get(0).getCode());
 		    return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);
 		}
 		
 		if(! transferService.checkIfValid(transaction)) {
 			status.setStatus("FAIL");
-			status.setError("No such data exists in the database");
+			status.setMessage("No such data exists in the database");
 		    return new ResponseEntity<ResponseStatus>(status, HttpStatus.ACCEPTED);
 		}
 		
@@ -97,7 +93,7 @@ public class TransferController {
 		
 		if(bindingResult.hasErrors()) {
 			status.setStatus("FAIL");
-			status.setError(bindingResult.getAllErrors().get(0).getCode());
+			status.setMessage(bindingResult.getAllErrors().get(0).getCode());
 		}
 		
 		executeTransferLogger.appendMessages("Executing the " + transferRequest.getTransactionType() + " request...");
@@ -105,10 +101,10 @@ public class TransferController {
 		try {
 			transferService.updateUniTransfer(transferRequest);
 			status.setStatus("SUCCESS");
-			status.setError("");
+			status.setMessage("");
 		} catch (FailedDBUpdateException e) {
 			status.setStatus("FAIL");
-			status.setError(e.getMessage());
+			status.setMessage(e.getMessage());
 			executeTransferLogger.appendMessages(e.getMessage());
 		} finally {
 			executeTransferLogger.writeLogs();

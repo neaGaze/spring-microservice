@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.stargate.entity.Bank;
 import com.stargate.exception.AccountDoesNotExistException;
+import com.stargate.logging.BaseLogger;
 import com.stargate.logging.ConsoleLogger;
 import com.stargate.repository.GetBalanceRepository;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +29,18 @@ public class GetBalanceController {
 
 	@Autowired
 	private GetBalanceRepository getBalanceRepository;
-
+	
+	@Autowired
+	private BaseLogger controllerLogger;
+	
+	@GetMapping(path="/test")
+    public final String hola() throws UnknownHostException {
+        return "Hola! Puedes encontrarme en " + InetAddress.getLocalHost().getHostAddress();
+    }
 	
 	@GetMapping(path="/find")
 	public @ResponseBody Bank getBank (@RequestParam String account_no) {
-		ConsoleLogger controllerLogger = new ConsoleLogger(GetBalanceController.class.getName(), "Control is at GetBalanceController()");
+		//ConsoleLogger controllerLogger = new ConsoleLogger(GetBalanceController.class.getName(), "Control is at GetBalanceController()");
 		
 		Bank account = getBalanceRepository.findBalance(account_no);
 		

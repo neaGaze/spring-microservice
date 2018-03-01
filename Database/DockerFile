@@ -1,0 +1,13 @@
+FROM mysql:5.7.15
+
+ENV MYSQL_DATABASE=ach_stargate
+ENV MYSQL_ROOT_PASSWORD=root
+#ENV MYSQL_USER=root 
+
+#RUN sed -i 's|/var/lib/mysql|/var/lib/mysql2|g' /etc/mysql/my.cnf
+ADD ./*.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 3306
+
+#RUN /entrypoint.sh mysqld & sleep 30 && killall mysqld
+#RUN rm /docker-entrypoint-initdb.d/db.sql

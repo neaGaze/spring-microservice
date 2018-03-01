@@ -6,7 +6,7 @@
 	<groupId>com.stargate</groupId>
 	<artifactId>getbalance</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>getbalance-microservice</name>
 	<description>Project for Spring Boot to Getbalance </description>

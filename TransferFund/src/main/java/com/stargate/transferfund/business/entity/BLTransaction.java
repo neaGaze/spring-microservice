@@ -14,6 +14,8 @@ public class BLTransaction implements Serializable {
 
 	private static final long serialVersionUID = -4450261208250531230L;
 
+	private String transactionId;
+	
 	private String senderDetails;
 
 	private String receiverDetails;
@@ -69,5 +71,13 @@ public class BLTransaction implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 }

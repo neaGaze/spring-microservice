@@ -13,6 +13,7 @@ import com.stargate.transferfund.exception.FailedDBUpdateException;
 import com.stargate.transferfund.logging.BaseLogger;
 import com.stargate.transferfund.repository.BankRepository;
 import com.stargate.transferfund.util.JMSMessageDelayCalculatorUtil;
+import com.stargate.transferfund.util.PrgmTxnToBsnTxnConverter;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -28,6 +29,9 @@ public class TransferServiceImpl implements TransferService {
 	
 	@Autowired
 	private BLTransaction blTransaction;
+	
+	@Autowired
+	private PrgmTxnToBsnTxnConverter entityConverter;
 	
 	@Autowired
 	private BankRepository bankRepository;
@@ -55,7 +59,8 @@ public class TransferServiceImpl implements TransferService {
 	public void transfertoJMS(Transaction transaction) {
 		transferToJMSLogger.appendMessages("Sending a transaction to JMS.");
 		
-		blTransaction.decorateBLTransaction(transaction);
+		blTransaction = entityConverter.convert(transaction);
+		//blTransaction.decorateBLTransaction(transaction);
 		
 		long timeToDeliver = jmsMessageDelayCalculatorUtil.getDelayTime(delayTime, Calendar.getInstance().getTime());
 		transferToJMSLogger.appendMessages("Expected Delivery Time: " + (timeToDeliver / 1000) + " secs");

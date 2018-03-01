@@ -31,8 +31,8 @@ public class AccountDoesNotExistException extends Exception implements Serializa
 
 	public void setLogger(BaseLogger logger) {
 		this.logger = logger;
-		BaseLogger accountDoesNotExistLogger = new ConsoleLogger(AccountDoesNotExistException.class.getName(), errMsg);
-		this.logger.setSuccessor(accountDoesNotExistLogger);
+		//BaseLogger accountDoesNotExistLogger = new ConsoleLogger(AccountDoesNotExistException.class.getName(), errMsg);
+		//this.logger.setSuccessor(accountDoesNotExistLogger);
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class JMSMessageDelayCalculatorUtil {
 	public long getDelayTime(Integer delayTime, Date currentTime) {
 		long curTime = currentTime.getTime();
         long newTime = (((curTime / delayTime) * delayTime) + delayTime) - curTime;
-        jmsDelayCalcLogger.appendMessages("CurTime in milli: " + curTime + " and delayTime: " + delayTime);
+        jmsDelayCalcLogger.appendMessages("CurTime in milli: " + curTime + " and delayTime: " + (newTime/1000) + " secs");
         return newTime;
 	}
 }

@@ -3,11 +3,8 @@ package com.stargate.transferfund.validator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-
 import com.stargate.transferfund.business.entity.BLTransferRequest;
 import com.stargate.transferfund.entity.TransactionType;
-import com.stargate.transferfund.entity.TransferRequest;
 
 @Component
 public class TransferRequestValidator extends ValidatorRouter {

@@ -10,6 +10,7 @@ import com.stargate.transferfund.logging.BaseLogger;
 import com.stargate.transferfund.logging.ConsoleLogger;
 import com.stargate.transferfund.service.TransferServiceImpl;
 import com.stargate.transferfund.util.JMSMessageDelayCalculatorUtil;
+import com.stargate.transferfund.util.PrgmTxnToBsnTxnConverter;
 
 @Configuration
 public class LoggingConfiguration {
@@ -63,6 +64,9 @@ public class LoggingConfiguration {
 	
 	@Bean("blTransaction")
 	public BLTransaction blTransaction() {return new BLTransaction();}
+	
+	@Bean
+	public PrgmTxnToBsnTxnConverter entityConverter() {return new PrgmTxnToBsnTxnConverter(); };
 /*
 	@Bean("bankValidCheckLogger")
 	@DependsOn("initiateTransferLogger")

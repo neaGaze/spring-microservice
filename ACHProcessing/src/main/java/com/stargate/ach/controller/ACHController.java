@@ -24,6 +24,22 @@ import com.stargate.ach.logging.BaseLogger;
 import com.stargate.ach.service.ACHService;
 import com.stargate.ach.validator.BLTransactionValidator;
 
+/************************ACCEPTANCE CRITERIA: *********************************
+ * 
+ * 
+ * Based on the request(SEND/REQUEST), the ACH should send the Originating Bank either the debit/credit information based on the request.
+ * ACH should wait for the confirmation status update from the originating/receiving bank to proceed with the subsequent flow.
+ * After successfully receiving the confirmation from the originating bank, ACH should send the request to the receiving bank 
+ * for either crediting/debiting the
+ * same amount based on the request.
+ * An “successful” transaction must ensure the amount is credited to account and
+ * debited to account.
+ * An JUnit test that verifies the correctness of each sub processes.
+ * Ability to test API with a mocked-up endpoint.
+ * The ability to catch and handle exceptions based on the payment failure
+ * scenarios.
+**************************************************************************************/
+
 @RestController
 @RequestMapping("/ach")
 public class ACHController {
@@ -76,7 +92,7 @@ public class ACHController {
 
 		if (txn == null) {
 			respStatus.setStatus("FAIL");
-			respStatus.setError("Null payload received");
+			respStatus.setMessage("Null payload received");
 			persistLogger.appendMessages("The BLTransaction object received is null");
 			return new ResponseEntity<ResponseStatus>(respStatus, HttpStatus.ACCEPTED);
 		}
@@ -89,12 +105,12 @@ public class ACHController {
 			sts = service.updateStatus(txn, txn.getStatus());
 		} catch (DBUpdateFailException e) {
 			respStatus.setStatus("FAIL");
-			respStatus.setError(respStatus.getError() + "\n"
+			respStatus.setMessage(respStatus.getMessage() + "\n"
 					+ "some problems with transactionId. It is possible that the autogeneration of Id failed");
 			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
 		} catch (MulitpleDBRowEffectedException e) {
 			respStatus.setStatus("FAIL");
-			respStatus.setError(MulitpleDBRowEffectedException.getMesg());
+			respStatus.setMessage(MulitpleDBRowEffectedException.getMesg());
 			persistLogger
 					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
 		} finally {
@@ -153,9 +169,10 @@ public class ACHController {
 				ResponseStatus.class);
 
 		ResponseStatus responseStatus = (ResponseStatus) newResponseEntity.getBody();
+		responseStatus.setMessage("" + debitTransferRequest.getTransactionType() + " success");
 
 		persistLogger.appendMessages("Received the response from endpoint with body " + responseStatus.getStatus() + " "
-				+ responseStatus.getError());
+				+ responseStatus.getMessage());
 
 		// change the txn status where the response received is FAIL
 		String txnSaveStatus = txn.getStatus();
@@ -169,12 +186,12 @@ public class ACHController {
 		} catch (DBUpdateFailException e) {
 			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
 			responseStatus.setStatus("FAIL");
-			responseStatus.setError(responseStatus.getError() + "transactionId is Incorrect");
+			responseStatus.setMessage(responseStatus.getMessage() + "transactionId is Incorrect");
 		} catch (MulitpleDBRowEffectedException e) {
 			persistLogger
 					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
 			responseStatus.setStatus("FAIL");
-			responseStatus.setError(responseStatus.getError() + "MulitpleDBRowEffectedException.getMesg()");
+			responseStatus.setMessage(responseStatus.getMessage() + "MulitpleDBRowEffectedException.getMesg()");
 		} finally {
 			persistLogger.appendMessages(
 					((sts == 1) ? "Updated" : "Failed to update") + " the transaction status to `InProgress`! ");
@@ -223,9 +240,10 @@ public class ACHController {
 				ResponseStatus.class);
 
 		ResponseStatus responseStatus = (ResponseStatus) newResponseEntity.getBody();
+		responseStatus.setMessage("" + creditTransferRequest.getTransactionType() + " success");
 
 		persistLogger.appendMessages("Received the response from endpoint with body " + responseStatus.getStatus() + " "
-				+ responseStatus.getError());
+				+ responseStatus.getMessage());
 
 		String txnSaveStatus = txn.getStatus();
 		if (responseStatus.getStatus().equals("FAIL")) {
@@ -238,12 +256,12 @@ public class ACHController {
 		} catch (DBUpdateFailException e) {
 			persistLogger.appendMessages("The data failed to persist due to incorrect transactionId");
 			responseStatus.setStatus("FAIL");
-			responseStatus.setError(responseStatus.getError() + "\n transactionId is Incorrect");
+			responseStatus.setMessage(responseStatus.getMessage() + "\n transactionId is Incorrect");
 		} catch (MulitpleDBRowEffectedException e) {
 			persistLogger
 					.appendMessages("While persisting data multiple rows were effected. This is not a desired result");
 			responseStatus.setStatus("FAIL");
-			responseStatus.setError(responseStatus.getError() + "\n MulitpleDBRowEffectedException.getMesg()");
+			responseStatus.setMessage(responseStatus.getMessage() + "\n MulitpleDBRowEffectedException.getMesg()");
 		} finally {
 			persistLogger.appendMessages(
 					((sts == 1) ? "Updated" : "Failed to update") + " the transaction status to `InProgress`! ");

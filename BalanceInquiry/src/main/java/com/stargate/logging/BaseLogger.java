@@ -1,22 +1,55 @@
 package com.stargate.logging;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public abstract class BaseLogger {
 
 	// Define the logger object for this class
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	protected Logger log;
 	
-	private BaseLogger successor;
-	protected String logMessage, controlLevelPath;
-
+	protected BaseLogger successor;
+	protected StringBuilder logMsgBuilder;
+	protected String controlLevelPath;
+	
+	protected List<BaseLogger> listOfOldSuccessors;
+	
+	public BaseLogger() {}
+	
+	public BaseLogger(Class controlLevelPath) {
+		this.controlLevelPath = controlLevelPath.getName();
+	}
+	
+	public BaseLogger(Class controlLevelPath, String logMsg) {
+		this.appendMessages(logMsg);
+		this.controlLevelPath = controlLevelPath.getName();
+	}
+	
 	protected String getMessage() {
-		return logMessage;
+		return logMsgBuilder.toString();
+	}
+	
+	public void appendMessages(String msg) {
+		if(logMsgBuilder == null)
+			logMsgBuilder = new StringBuilder(msg);
+		
+		logMsgBuilder.append("\n" + msg);
 	}
 
 	protected String getControlLevelPath() {
 		return controlLevelPath;
+	}
+	
+	public void setControlLevelPath(String controlLevelPath) {
+		this.controlLevelPath = controlLevelPath;
 	}
 	
 	public BaseLogger getSuccessor() {
@@ -24,12 +57,13 @@ public abstract class BaseLogger {
 	}
 
 	public void setSuccessor(BaseLogger successor) {
+		if(this.successor != null) {
+			if(listOfOldSuccessors == null) listOfOldSuccessors = new ArrayList<BaseLogger>();
+			listOfOldSuccessors.add(this.successor);
+		}
+
 		this.successor = successor;
 	}
 
-	public void writeLogs() {
-		log.debug(getMessage());
-		// now iterate through all of its successors and print all their logs in succession
-		successor.writeLogs();
-	}
+	abstract public void writeLogs();
 }

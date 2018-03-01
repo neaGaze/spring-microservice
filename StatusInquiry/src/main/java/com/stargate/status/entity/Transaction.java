@@ -14,7 +14,7 @@ public class Transaction implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer transaction_id;
+	private String transaction_id;
 	@Transient
 	private Double amount;
 	
@@ -28,11 +28,11 @@ public class Transaction implements Serializable {
 		this.status = status;
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return transaction_id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.transaction_id = id;
 	}
 	

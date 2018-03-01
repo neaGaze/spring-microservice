@@ -7,4 +7,5 @@ import com.stargate.status.entity.Transaction;
 @Repository
 public interface GetStatusRepository extends CrudRepository<Transaction,String>  {
 
+
 }
