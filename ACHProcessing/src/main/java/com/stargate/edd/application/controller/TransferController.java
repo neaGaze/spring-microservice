@@ -6,16 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.stargate.edd.application.entity.ACHPlacedSuccess;
+import com.stargate.edd.application.entity.ACHResponse;
 import com.stargate.edd.application.entity.TransferRequestState;
+import com.stargate.edd.application.events.BaseTransferRequestInfo;
 import com.stargate.edd.application.events.TransferRequestInfo;
 import com.stargate.edd.application.service.QueryService;
 import com.stargate.edd.application.service.TransferCommandService;
+import com.stargate.edd.application.validator.TransactionValidator;
 
 @Controller
 public class TransferController {
@@ -26,13 +33,20 @@ public class TransferController {
 	@Autowired
 	private QueryService queryService;
 	
-	@PostMapping(value="/post-transfer")
-	public ResponseEntity postTransferRequest(@RequestBody TransferRequestInfo info) {
+	@Autowired
+	private TransactionValidator transactionValidator;
 
-        final UUID id = UUID.randomUUID();
-        info.setId(id);
-        commandService.placeTransferRequest(info);
-		return new ResponseEntity(HttpStatus.ACCEPTED);
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(transactionValidator);
+	}
+
+	@PostMapping(value="/post-transfer")
+	public ResponseEntity<ACHResponse> postTransferRequest(@RequestBody @Validated BaseTransferRequestInfo info) {
+		TransferRequestInfo infoWithId = new TransferRequestInfo(info);
+		commandService.placeTransferRequest(infoWithId);
+		return new ResponseEntity<ACHResponse>(new ACHPlacedSuccess(infoWithId.getId().toString()), HttpStatus.ACCEPTED);
 	}
 	
 

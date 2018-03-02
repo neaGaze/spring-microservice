@@ -2,40 +2,21 @@ package com.stargate.edd.application.events;
 
 import java.io.Serializable;
 import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class TransferRequestInfo implements Serializable {
+public class TransferRequestInfo extends BaseTransferRequestInfo implements Serializable {
 	
-	
-	private static final long serialVersionUID = -2393938903016528933L;
-	
+	private static final long serialVersionUID = -2131199180712701960L;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
 	private UUID id;
-	private String from;
-	private String destination;
-	private Double amount;
 	
 	public TransferRequestInfo() {}
+
+	public TransferRequestInfo(BaseTransferRequestInfo info) {
+		super(info);
+		this.id = UUID.randomUUID();
+	}
 	
-	public String getFrom() {
-		return from;
-	}
-	public void setFrom(String from) {
-		this.from = from;
-	}
-	public String getDestination() {
-		return destination;
-	}
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
-	public Double getAmount() {
-		return amount;
-	}
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
 	public UUID getId() {
 		return id;
 	}

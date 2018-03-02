@@ -4,9 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.stargate.edd2.application</groupId>
-	<artifactId>EventDrivenTestRun-2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>EventDrivenTestRun-2</name>
 	<description>Demo project for EDD using Spring Boot US-2</description>
@@ -93,4 +92,5 @@
 	</build>
 
 
+	<artifactId>stargate-funds</artifactId>
 </project>

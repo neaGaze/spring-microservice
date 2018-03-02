@@ -15,5 +15,6 @@ public class QueryService {
 	private TransferRequestRepoMock repository;
 	
 	public TransferRequestState getInfo(UUID id) {
-		return repository.getMockRepo(id);}
+		return repository.getMockRepo(id);
+	}
 }

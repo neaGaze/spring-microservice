@@ -1,9 +1,6 @@
-package com.stargate.edd.application.entity;
+package com.stargate.statusquery.edd.application.entity;
 
 import java.util.UUID;
-
-import com.stargate.edd.application.events.TransferRequestInfo;
-import com.stargate.edd.application.peristence.mock.States;
 
 /**
  * This event is stored in the `EventStore` NoSQL db 

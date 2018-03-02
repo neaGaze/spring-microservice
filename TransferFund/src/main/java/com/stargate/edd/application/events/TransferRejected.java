@@ -9,8 +9,11 @@ public class TransferRejected extends BaseTransferEvent {
 	private UUID id;
 	private String reason;
 
-	protected TransferRejected(Object obj) {
-		super(obj);
+	public TransferRejected() {}
+	
+	public TransferRejected(UUID id, String reason) {
+		this.id = id;
+		this.reason = reason;
 	}
 	
 	public UUID getId() {

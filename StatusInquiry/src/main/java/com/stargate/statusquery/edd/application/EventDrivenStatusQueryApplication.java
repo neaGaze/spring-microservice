@@ -1,4 +1,4 @@
-package com.stargate.edd.application;
+package com.stargate.statusquery.edd.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,17 +6,17 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class EventDrivenTestRunApplication extends SpringBootServletInitializer {
+public class EventDrivenStatusQueryApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EventDrivenTestRunApplication.class, args);
+		SpringApplication.run(EventDrivenStatusQueryApplication.class, args);
 	}
-	
+
 	/**
      * Used when run as WAR
      */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(EventDrivenTestRunApplication.class);
+        return builder.sources(EventDrivenStatusQueryApplication.class);
     }
 }

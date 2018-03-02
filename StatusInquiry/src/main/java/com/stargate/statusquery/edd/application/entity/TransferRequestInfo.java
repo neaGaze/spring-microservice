@@ -1,4 +1,4 @@
-package com.stargate.edd.application.events;
+package com.stargate.statusquery.edd.application.entity;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -7,8 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TransferRequestInfo implements Serializable {
 	
-	
-	private static final long serialVersionUID = -2393938903016528933L;
+	private static final long serialVersionUID = -5407861882502997000L;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
 	private UUID id;

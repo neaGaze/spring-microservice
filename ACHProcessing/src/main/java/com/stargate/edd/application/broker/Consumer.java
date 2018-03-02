@@ -6,12 +6,17 @@ import org.springframework.stereotype.Component;
 import com.stargate.edd.application.events.BaseTransferEvent;
 import com.stargate.edd.application.events.CreditCompleted;
 import com.stargate.edd.application.events.CreditFailed;
+import com.stargate.edd.application.events.CreditRollbackCompleted;
+import com.stargate.edd.application.events.CreditRollbackFail;
+import com.stargate.edd.application.events.CreditRollbackPlaced;
 import com.stargate.edd.application.events.CreditTxnPlaced;
 import com.stargate.edd.application.events.DebitCompleted;
 import com.stargate.edd.application.events.DebitFailed;
+import com.stargate.edd.application.events.DebitRollbackPlaced;
 import com.stargate.edd.application.events.DebitTxnPlaced;
 import com.stargate.edd.application.events.RequestValidatedEvent;
 import com.stargate.edd.application.events.TransferAccepted;
+import com.stargate.edd.application.events.TransferCompleted;
 import com.stargate.edd.application.events.TransferRejected;
 import com.stargate.edd.application.events.TransferRequestCreated;
 import com.stargate.edd.application.service.TransferCommandService;
@@ -45,6 +50,9 @@ public class Consumer /*implements ApplicationListener<BaseTransferEvent>*/{
 
 		if (evt instanceof TransferRejected)
 			this.apply((TransferRejected) evt);
+
+		if (evt instanceof TransferCompleted)
+			this.apply((TransferCompleted) evt);
 		
 		if(evt instanceof DebitTxnPlaced) 
 			this.apply((DebitTxnPlaced) evt);
@@ -63,6 +71,12 @@ public class Consumer /*implements ApplicationListener<BaseTransferEvent>*/{
 
 		if(evt instanceof CreditFailed) 
 			this.apply((CreditFailed) evt);
+
+		if(evt instanceof CreditRollbackCompleted) 
+			this.apply((CreditRollbackCompleted) evt);
+
+		if(evt instanceof CreditRollbackFail) 
+			this.apply((CreditRollbackFail) evt);
 	}
 	
 /*
@@ -85,8 +99,12 @@ public class Consumer /*implements ApplicationListener<BaseTransferEvent>*/{
 		service.processTransferRequestAccepted(evt.getInfo());
 	}
 	
-	public void apply(TransferRejected evt) {
-		service.rejectTransfer(evt.getId());
+	public void apply(TransferRejected evt) { 
+		service.rejectTransfer(evt.getId(), evt.getReason());
+	}
+	
+	public void apply(TransferCompleted evt) { 
+		service.completeTransfer(evt.getId());
 	}
 	
 	public void apply(DebitTxnPlaced evnt) {
@@ -101,6 +119,10 @@ public class Consumer /*implements ApplicationListener<BaseTransferEvent>*/{
 		service.processDebitFailed(evnt.getId());
 	}
 	
+	public void apply(DebitRollbackPlaced evnt) {
+		service.processDebitRollbackPlaced(evnt.getInfo()); 
+	}
+	
 	public void apply(CreditTxnPlaced evnt) {
 		service.processCreditPlaced(evnt.getInfo());
 	}
@@ -112,4 +134,17 @@ public class Consumer /*implements ApplicationListener<BaseTransferEvent>*/{
 	public void apply(CreditFailed evnt) {
 		service.processCreditFailed(evnt.getId());
 	}
+
+	public void apply(CreditRollbackPlaced evnt) {
+		service.processCreditRollbackPlaced(evnt.getInfo());
+	}
+	
+	public void apply(CreditRollbackCompleted evnt) {
+		service.processCreditRollbackComplete(evnt.getId());
+	}
+
+	public void apply(CreditRollbackFail evnt) {
+		service.processCreditRollbackFail(evnt.getId());
+	}
+	
 }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.stargate.edd.application.events.CreditCompleted;
 import com.stargate.edd.application.events.CreditFailed;
+import com.stargate.edd.application.events.CreditRollbackCompleted;
+import com.stargate.edd.application.events.CreditRollbackFail;
 import com.stargate.edd.application.events.CreditTxnPlaced;
 import com.stargate.edd.application.events.DebitCompleted;
 import com.stargate.edd.application.events.DebitFailed;
@@ -64,6 +66,18 @@ public class TransferFundService {
 		eventProducer.publish(new CreditCompleted(info.getId()));
 	}
 
+	public void placeCreditRollbackEvent(TransferRequestInfo info) {
+		Integer rowsEffected = repo.creditBankBalance(info.getFrom(), info.getAmount());
+		try {
+			validate(rowsEffected);
+		} catch (NonAtomicUpdateException | InsufficientFundException e) {
+			eventProducer.publish(new CreditRollbackFail(info.getId()));
+		}
+		
+		eventProducer.publish(new CreditRollbackCompleted(info.getId()));
+	}
+
+	
 	public void validate(Integer dbRowsUpdated) throws InsufficientFundException, NonAtomicUpdateException {
 		if (dbRowsUpdated.intValue() == 0)
 			throw new InsufficientFundException();

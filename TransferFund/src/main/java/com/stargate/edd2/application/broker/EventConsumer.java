@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import com.stargate.edd.application.events.BaseTransferEvent;
+import com.stargate.edd.application.events.CreditRollbackPlaced;
 import com.stargate.edd.application.events.CreditTxnPlaced;
 import com.stargate.edd.application.events.DebitTxnPlaced;
 import com.stargate.edd.application.events.TransferRequestCreated;
@@ -29,6 +30,10 @@ public class EventConsumer {
 		if (event instanceof CreditTxnPlaced) {
 			this.apply((CreditTxnPlaced) event);
 		}
+		
+		if (event instanceof CreditRollbackPlaced) {
+			this.apply((CreditRollbackPlaced) event);
+		}
 	}
 
 	public void apply(TransferRequestCreated evt) {
@@ -44,5 +49,9 @@ public class EventConsumer {
 
 	public void apply(CreditTxnPlaced evt) {
 		service.placeCreditCompleteEvent(evt.getInfo());
+	}
+
+	public void apply(CreditRollbackPlaced evt) {
+		service.placeCreditRollbackEvent(evt.getInfo());
 	}
 }

@@ -1,4 +1,4 @@
-package com.stargate.edd.application.peristence.mock;
+package com.stargate.statusquery.edd.application.entity;
 
 public enum States {
 	PLACED,

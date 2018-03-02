@@ -8,8 +8,10 @@ public class TransferCompleted extends BaseTransferEvent {
 	
 	private UUID id;
 
-	protected TransferCompleted(Object obj) {
-		super(obj);
+	public TransferCompleted() {}
+	
+	public TransferCompleted(UUID id) {
+		this.id = id;
 	}
 	
 	public UUID getId() {

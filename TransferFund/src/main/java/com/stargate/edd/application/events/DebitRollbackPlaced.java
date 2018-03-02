@@ -1,14 +1,14 @@
 package com.stargate.edd.application.events;
 
-public class CreditRollbackPlaced extends BaseTransferEvent {
+public class DebitRollbackPlaced extends BaseTransferEvent {
 
-	private static final long serialVersionUID = 2739905728055949785L;
+	private static final long serialVersionUID = 5344673141652318643L;
 	
 	private TransferRequestInfo info;
-	
-	public CreditRollbackPlaced() {}
 
-	public CreditRollbackPlaced(TransferRequestInfo info) {
+	public DebitRollbackPlaced() {}
+
+	public DebitRollbackPlaced(TransferRequestInfo info) {
 		this.info = info;
 	}
 	

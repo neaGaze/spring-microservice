@@ -103,9 +103,9 @@ public class TransferRequestRepoMock {
 		updateRepoStatus(state);
 	}
 
-	public void apply(TransferCompleted evt) {
+	public void applyTranferComplete(UUID id) {
 		System.out.println("TransferCompleted Receiver 2 destination: <" + ">");
-		ACHTransaction ach = repository.findOne(evt.getId().toString());
+		ACHTransaction ach = repository.findOne(id.toString());
 		TransferRequestState state = TransferRequestState.build(ach);
 		state.complete();
 		updateRepoStatus(state);
@@ -156,6 +156,22 @@ public class TransferRequestRepoMock {
 		ACHTransaction ach = repository.findOne(id.toString());
 		TransferRequestState state = TransferRequestState.build(ach);
 		state.creditFail();
+		updateRepoStatus(state);
+	}
+	
+	public void applyCreditRollbackPlaced(UUID id) {
+		//mockRepo.get(evnt.getInfo().getId()).debitPlaced();
+		ACHTransaction ach = repository.findOne(id.toString());
+		TransferRequestState state = TransferRequestState.build(ach);
+		state.creditRollbackPlaced();
+		updateRepoStatus(state);
+	}
+
+	public void applyCreditRollbackCompleted(UUID id) {
+		//mockRepo.get(evnt.getInfo().getId()).debitPlaced();
+		ACHTransaction ach = repository.findOne(id.toString());
+		TransferRequestState state = TransferRequestState.build(ach);
+		state.creditRollbackComplete();
 		updateRepoStatus(state);
 	}
 	
