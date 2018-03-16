@@ -1,13 +1,32 @@
 version: '2'
 
 services:
-  db:
+  txn-db:
     build:
-      context: ./Database/
+      context: ./ACHProcessing/db/
       dockerfile: DockerFile
-    image: neagaze/mysql-ach-stargate-2
+    image: neagaze/stargate-transaction-db
+    container_name: txn-dn-container
     ports:
-      - 8081:3306
+      - 8090:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=ach_stargate_txn
+    expose:
+      - "3306"
+    cpu_shares: 100
+    mem_limit: 262144000
+    volumes:
+      - txn-data:/var/lib/mysql
+      
+  acnt-db:
+    build:
+      context: ./TransferFund/db/
+      dockerfile: DockerFile
+    image: neagaze/stargate-accounts-db
+    container_name: acnt-dn-container
+    ports:
+      - 8091:3306
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=ach_stargate
@@ -15,12 +34,45 @@ services:
       - "3306"
     cpu_shares: 100
     mem_limit: 262144000
+    volumes:
+      - acnt-data:/var/lib/mysql
+         
+  artemis:
+    image: vromero/activemq-artemis
+    container_name: artemis-container
+    ports:
+      - 8092:61616
+    environment:
+      - ARTEMIS_USERNAME=admin
+      - ARTEMIS_PASSWORD=admin
+    expose:
+      - "61616"
       
-  balance-inquiry:
+  ach-ms:
     build:
-      context: ./BalanceInquiry/
+      context: ./ACHProcessing/
       dockerfile: DockerFile
-    image: neagaze/stargate-balance-inquirer-2
+    image: neagaze/stargate-ach-edd
+    container_name: ach-ms-container
+    ports:
+      - 8081:8080
+    expose:
+      - "8080"
+    cpu_shares: 100
+    mem_limit: 262144000
+    links:
+      - txn-db
+      - artemis
+    depends_on:
+      - acnt-db  
+      - artemis
+      
+  funds-ms:
+    build:
+      context: ./TransferFund/
+      dockerfile: DockerFile
+    image: neagaze/stargate-funds-edd
+    container_name: funds-ms-container
     ports:
       - 8082:8080
     expose:
@@ -28,5 +80,31 @@ services:
     cpu_shares: 100
     mem_limit: 262144000
     links:
-      - db
+      - acnt-db  
+      - artemis
+    depends_on:
+      - acnt-db  
+      - artemis
       
+  status-ms:
+    build:
+      context: ./StatusInquiry/
+      dockerfile: DockerFile
+    image: neagaze/stargate-status-edd
+    container_name: status-ms-container
+    ports:
+      - 8083:8080
+    expose:
+      - "8080"
+    cpu_shares: 100
+    mem_limit: 262144000
+    links:
+      - txn-db  
+    depends_on:
+      - txn-db
+      
+volumes:
+  txn-data:
+    driver: local
+  acnt-data:
+    driver: local

@@ -68,8 +68,9 @@ public class TransferRequestRepoMock {
 	}
 
 	public void applyCreateTranfer(TransferRequestInfo info) {
-		System.out.println("\nTransferRequestCreated Receiver 2 destination: <" + info.getDestination() + ">");
 		/*
+		System.out.println("\nTransferRequestCreated Receiver 2 destination: <" + info.getDestination() + ">");
+		
 		mockRepo.putIfAbsent(evt.getInfo().getId(), new TransferRequestState());
 		mockRepo.get(evt.getInfo().getId()).place(evt.getInfo());
 		mockRepo.forEach(

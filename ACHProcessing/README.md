@@ -16,6 +16,11 @@ In Eclipse:
 2. Change the `spring.datasource.username` and `spring.datasource.password` according to your local system. Check if the port is not occupied
 3.  Run the project as `maven compile`
 
+In Docker:
+1. Goto the parent directory `cd ..`
+2. Run the command `docker-compose build` to build the images
+3. Run the command `docker-compose up` to run the containers in a bulk
+
 REQUEST
 --------------------------------------------
 For details of payload and JSON format please refer to the RAML definition at 'http://gitlab.capgemini-cfs.com/na-stargate/Mule-ACH-API'
@@ -25,30 +30,8 @@ api
 		- http://<<host:port/path>>/ach/persist
 		  - incoming payload: 
 			{
-					"senderDetails": "2413116579431930",
-					"receiverDetails": "3593359822843810",
-					"amount": "1000.00",
-					"status":"InProgress"
+				"from": "2413116579431930",
+				"destination": "7064689794255120",
+				"amount": 100
 			}
 
-  - POST
-		- http://<<host:port/path>>/ach/deliver-to-sender
-		  - incoming payload: 
-			{	
-					"transactionId": "66", 
-					"senderDetails": "2413116579431930",
-					"receiverDetails": "3593359822843810",
-					"amount": "1000.00",
-					"status":"InProgress"
-			}			
-			
-  - POST
-		- http://<<host:port/path>>/ach/deliver-to-receiver
-		  - incoming payload: 
-			{	
-					"transactionId": "66", 
-					"senderDetails": "2413116579431930",
-					"receiverDetails": "3593359822843810",
-					"amount": "1000.00",
-					"status":"InProgress"
-			}

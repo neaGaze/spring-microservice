@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.stargate.edd.application.events.TransferRequestInfo;
 import com.stargate.edd2.application.entity.ACHResponse;
+import com.stargate.edd2.application.entity.AchErrorResponse;
 import com.stargate.edd2.application.entity.AchSimpleResponse;
 import com.stargate.edd2.application.service.TransferFundService;
 import com.stargate.edd2.application.validation.TransactionValidator;
@@ -33,13 +34,25 @@ public class BaseController {
 	@PostMapping(value="/debit")
 	public ResponseEntity<ACHResponse> performDebit(@RequestBody @Validated TransferRequestInfo body) {
 		System.out.println("DEBIT call received as " + body.toString());
-		commandService.placeDebitEvent(body);
-		return new ResponseEntity<ACHResponse>(new AchSimpleResponse("Debit command received"), HttpStatus.ACCEPTED);
+		ACHResponse returnBody;
+		if(body.getId() == null)
+			returnBody = new AchErrorResponse("DEBIT_FAILED", "transactionId is not valid");
+		else {
+			commandService.placeDebitEvent(body);
+			returnBody = new AchSimpleResponse("Debit command received");
+		}
+		return new ResponseEntity<ACHResponse>(returnBody, HttpStatus.ACCEPTED);
 	}
 	
 	@PostMapping(value="/credit")
 	public ResponseEntity<ACHResponse> performCredit(@RequestBody @Validated TransferRequestInfo body) {
-		commandService.placeCreditEvent(body);
-		return new ResponseEntity<ACHResponse>(new AchSimpleResponse("Credit command received"), HttpStatus.ACCEPTED);
+		ACHResponse returnBody;
+		if(body.getId() == null)
+			returnBody = new AchErrorResponse("CREDIT_FAILED", "transactionId is not valid");
+		else {
+			commandService.placeCreditEvent(body);
+			returnBody = new AchSimpleResponse("Credit command received");
+		}
+		return new ResponseEntity<ACHResponse>(returnBody, HttpStatus.ACCEPTED);
 	}
 }
